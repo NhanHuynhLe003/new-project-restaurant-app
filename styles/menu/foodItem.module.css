@@ -1,0 +1,115 @@
+.cardContainer {
+    width: 100%;
+    box-shadow: 2px 2px var(--gray-5);
+    position: relative;
+    border-radius: 8px;
+
+}
+
+.cardContainer .imgContainer {
+    width: 100%;
+    height: 267px;
+}
+
+.cardContainer .imgContainer img {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px 8px 0 0;
+}
+
+
+.price {
+    color: var(--primary-color);
+    font-size: 20px;
+    font-weight: 500;
+
+}
+
+.hidePrice {
+    display: none;
+}
+
+.priceDeleted {
+    text-decoration: line-through;
+    color: var(--gray-4);
+}
+
+.ratings {
+    margin: 0.5em 0;
+}
+
+.priceInfo {
+    display: flex;
+    gap: 1em;
+    padding: 0 1em;
+    padding-bottom: 0.5em;
+    justify-content: center;
+}
+
+.foodName {
+    color: var(--gray-1);
+    font-size: 22px;
+
+    padding: 0 1em;
+    padding-top: 0.5em;
+}
+
+.foodNameContainer {
+    display: flex;
+    justify-content: center;
+}
+
+
+.cardControl .shopBtn {
+    background-color: #fff;
+    color: var(--primary-color);
+}
+
+.cardControl .shopBtn:hover {
+    transform: scale(1.1);
+}
+
+.cardControl .viewDetail {
+    background-color: #fff;
+    color: var(--primary-color);
+}
+
+.cardControl .viewDetail:hover {
+    transform: scale(1.1);
+
+}
+
+.active {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.cardControl {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    gap: 1em;
+    transition: 200ms ease-in;
+}
+
+.cardContainer:hover {
+    opacity: 0.8;
+}
+
+.cardContainer:hover .cardControl {
+    display: flex;
+
+}
+
+
+
+.cardControl .favorBtn {
+    background-color: #fff;
+    color: var(--primary-color);
+}
+
+.cardControl .favorBtn:hover {
+    transform: scale(1.1);
+}

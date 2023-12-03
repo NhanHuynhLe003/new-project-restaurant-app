@@ -1,0 +1,63 @@
+.menuContainer {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.label_sort {
+  margin-right: 1em;
+}
+
+
+.foodMenuContainer {
+  display: flex;
+  gap: 2em;
+}
+
+.foodMenuContainer .menuFood {
+  width: 80%;
+}
+
+.foodMenuContainer .filterFood {
+  width: 20%;
+}
+
+.searchInput button {
+
+  background-color: var(--primary-color);
+}
+
+.searchInput button:hover {
+  background-color: #fff !important;
+  color: var(--primary-color) !important;
+  border: 1px solid #ccc;
+}
+
+.cateFoodCheckbox {}
+
+.rangePriceInput {
+  background-color: var(--primary-color);
+  color: red
+}
+
+.rangePriceInput {
+  accent-color: var(--primary-color);
+
+}
+
+.tagLists {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+
+.tagLists .tag {
+  border-bottom: 1px solid #ccc;
+  width: fit-content;
+}
+
+.tagLists .tag:hover {
+  border-bottom: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  cursor: pointer !important;
+}

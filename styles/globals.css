@@ -6,6 +6,38 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
+:root {
+  /* Brand Colors */
+  --primary-color: #FF9F0D;
+  --secondary-color: #999966;
+  --primary-color-2: #195A00;
+  --secondary-color-2: #AF872F;
+  --primary-coffee: #BC9A6C;
+  --secondary-coffee: #EDEAE3;
+
+  /* State Colors */
+  --info: #2F80ED;
+  --success: #27AE60;
+  --warning: #E2B93B;
+  --error: #EB5757;
+
+  /* Black Colors*/
+  --black-1: #1E1E1E;
+  --black-2: #1D1D1D;
+  --black-3: #282828;
+  --white: #FFFFFF;
+
+  /* Grey Colors*/
+  --gray-1: #333333;
+  --gray-2: #4F4F4F;
+  --gray-3: #828282;
+  --gray-4: #BDBDBD;
+  --gray-5: #E0E0E0;
+
+
+
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -13,4 +45,80 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+h1 {
+  font-size: 60px;
+  line-height: 68px;
+}
+
+h2 {
+  font-size: 48px;
+  line-height: 56px;
+}
+
+h3 {
+  font-size: 40px;
+  line-height: 48px;
+}
+
+h4 {
+  font-size: 32px;
+  line-height: 40px;
+}
+
+h5 {
+  font-style: 24px;
+  line-height: 32px;
+}
+
+h6 {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.Large-Text-Bold {
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.Large-Text-Regular {
+
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.Medium-Text-Regular {
+  font-size: 18px;
+  line-height: 26px;
+}
+
+.Medium-Text-Bold {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 26px;
+}
+
+.Normal-Text-Bold {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: bold;
+}
+
+.Normal-Text-Regular {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.Small-Text-Bold {
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: bold;
+}
+
+.Small-Text-Regular {
+  font-size: 14px;
+  line-height: 22px;
+
 }

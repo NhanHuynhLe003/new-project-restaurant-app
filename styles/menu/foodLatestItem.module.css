@@ -1,0 +1,22 @@
+.productItemLatest {
+    display: flex;
+    gap: 8px;
+}
+
+.productItemLatest .imgContainer {
+    width: 30%;
+}
+
+.productItemLatest .imgContainer img {
+    width: 100%;
+}
+
+.productItemLatest .foodDesc {
+    width: 70%;
+}
+
+.productItemLatest .ratings {
+    display: flex;
+    margin: 4px 0;
+    gap: 4px;
+}
