@@ -1,0 +1,53 @@
+.NavBar {
+    background-color: var(--dark-1);
+}
+
+.NavContainer {
+    width: 80%;
+    margin: 0 auto;
+    background-color: var(--dark-1);
+    color: #fff;
+}
+
+.listPage {
+    display: flex;
+    justify-content: space-between;
+}
+
+.listPage li {
+    list-style-type: none;
+    border-bottom: 2px solid transparent;
+    transition: 200ms;
+}
+
+.listPage li:hover {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.pageActionControl {
+    display: flex;
+    gap: 16px;
+}
+
+.pageActionControl li {
+    list-style-type: none;
+}
+
+.pageActionControl li button {
+    color: #fff;
+    border: none;
+    background-color: transparent;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: 200ms;
+}
+
+.pageActionControl li button:hover {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    transform: scale(1.2);
+}
