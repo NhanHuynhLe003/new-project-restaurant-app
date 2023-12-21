@@ -61,3 +61,7 @@
   color: var(--primary-color);
   cursor: pointer !important;
 }
+
+.activeLabel {
+  color: red !important;
+}

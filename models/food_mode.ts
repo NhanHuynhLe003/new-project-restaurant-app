@@ -1,3 +1,5 @@
+import { discountModel } from "./discount";
+
 export interface FoodModel {
   food_id: string;
   food_name: string;
@@ -8,7 +10,7 @@ export interface FoodModel {
   food_ingredients?: string[];
   food_tags?: string[];
   food_price: number;
-  food_discount?: number;
+  food_discount: [];
   food_availability: boolean;
   created_at: string;
   updated_at: string;

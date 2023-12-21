@@ -6,7 +6,7 @@ import type { AppProps } from "next/app";
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const Layout = Component.Layout ?? EmptyLayout;
   return (
-    <Layout>
+    <Layout lightMode={false}>
       <Component {...pageProps} />
     </Layout>
   );

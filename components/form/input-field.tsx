@@ -33,6 +33,8 @@ export function InputField({
       onChange={onChange}
       name={name}
       fullWidth
+      error={!!error}
+      helperText={error?.message}
       margin="normal"
       {...rest}
     ></TextField>

@@ -34,7 +34,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths: dataConvert.map((food, index) => ({
       params: { foodId: `${food.food_id}-type=${food.food_type}` },
     })),
-    fallback: false,
+    fallback: true,
   };
 };
 

@@ -4,9 +4,15 @@ import { Header } from "../common/header";
 import { Footer } from "../common/footer";
 
 import { Col, Row } from "antd";
-export function MainLayout({ children }: LayoutProps) {
+import { Box } from "@mui/material";
+export function MainLayout({ children, lightMode }: LayoutProps) {
   return (
-    <div style={{ minHeight: "100vh" }}>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: lightMode ? "var(--dark-1)" : "",
+      }}
+    >
       <Header />
 
       <main
@@ -22,6 +28,6 @@ export function MainLayout({ children }: LayoutProps) {
         </Row>
       </main>
       <Footer />
-    </div>
+    </Box>
   );
 }

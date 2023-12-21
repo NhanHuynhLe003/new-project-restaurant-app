@@ -7,13 +7,31 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { navRoute } from "./routes-nav";
-
+import { Amplify, Auth } from "aws-amplify";
+import amplifyConfig from "../../../amplifyconfig.json";
+import Link from "next/link";
 export interface NavBarProps {}
 
-export default function NavBar(props: NavBarProps) {
-  const RouteMap = navRoute.filter((route) => !route.requiredLogin);
-  console.log(RouteMap);
+const API_GW_NAME = "ag-manage-restaurant-project";
+const API_KEY = "dgt6PuOZHY1Ot9ZXtbN0x1ZpZyRcilJY2phtxcnB";
 
+Amplify.configure(amplifyConfig);
+export default function NavBar(props: NavBarProps) {
+  const [isLogin, setIsLogin] = React.useState(false);
+  React.useEffect(() => {
+    async function checkAuthen() {
+      try {
+        const user = await Auth.currentAuthenticatedUser();
+        setIsLogin(true);
+      } catch (err) {
+        setIsLogin(false);
+      }
+    }
+    checkAuthen();
+  }, []);
+  const RouteMap = navRoute.filter((route) =>
+    !isLogin ? !route.requiredLogin : route
+  );
   return (
     <nav className={styles.NavBar}>
       <Row
@@ -28,7 +46,14 @@ export default function NavBar(props: NavBarProps) {
         <Col sm={{ span: 10 }}>
           <ul className={styles.listPage}>
             {RouteMap.map((route, index) => (
-              <li key={index}>{route.page}</li>
+              <li key={index}>
+                <Link
+                  style={{ textDecoration: "none", color: "#fff" }}
+                  href={route.path}
+                >
+                  {route.page}
+                </Link>
+              </li>
             ))}
           </ul>
         </Col>
