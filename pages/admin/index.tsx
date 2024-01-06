@@ -165,15 +165,12 @@ const AdminPage = ({ foodListData }: FoodListProps) => {
       fixed: "right",
 
       width: "4%",
-      render: (e, record, index) => (
+      render: (product, record, index) => (
         <Stack direction={"column"} gap={"0.5rem"}>
           <Button
             title="Chỉnh sửa sản phẩm"
             onClick={() =>
-              handleDirectToUpdateProduct(
-                foodListData[index].food_id,
-                foodListData[index].food_type
-              )
+              handleDirectToUpdateProduct(product.food_id, product.food_type)
             }
             variant="contained"
             color="success"
@@ -181,7 +178,9 @@ const AdminPage = ({ foodListData }: FoodListProps) => {
           >
             <EditOutlined />
           </Button>{" "}
-          <SubmitDeleteAlert deleteUrl="/foods/food002?type=food"></SubmitDeleteAlert>
+          <SubmitDeleteAlert
+            deleteUrl={`/foods/${product.food_id}?type=${product.food_type}`}
+          ></SubmitDeleteAlert>
         </Stack>
       ),
     },

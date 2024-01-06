@@ -71,7 +71,7 @@ export default function NavBar() {
     if (isLogin) {
       try {
         setLogoutLoading(true);
-        await Auth.signOut().catch((err) => console.error(err));
+        await Auth.signOut();
         setLogoutLoading(false);
         setMessageAuth({ message: "Logout Success", state: true });
         setOpenAlert(true);
@@ -109,8 +109,6 @@ export default function NavBar() {
   const RouteMap = navRoute.filter((route) =>
     isLogin ? (logAdmin ? route : !route.isAdmin) : !route.requiredLogin
   );
-
-  console.log(RouteMap);
 
   const handleDrawerOpen = () => {
     setVisibleDrawer(true);
