@@ -1,0 +1,21 @@
+.inputQuantity::-webkit-inner-spin-button, .inputQuantity::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.controlFeedbackBtn {
+    padding: 0.5rem 1rem;
+    color: var(--primary-color)
+}
+
+.controlFeedbackBtn:hover {
+    color: var(--white);
+    background-color: var(--primary-color);
+    opacity: 0.4;
+}
+
+.activeBtn {
+
+    color: var(--white);
+    background-color: var(--primary-color);
+}

@@ -1,6 +1,6 @@
 .menuContainer {
-  width: 80%;
-  margin: 0 auto;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 .label_sort {
@@ -14,11 +14,11 @@
 }
 
 .foodMenuContainer .menuFood {
-  width: 80%;
+  width: 70%;
 }
 
 .foodMenuContainer .filterFood {
-  width: 20%;
+  width: 30%;
 }
 
 .searchInput button {
@@ -36,18 +36,19 @@
 
 .rangePriceInput {
   background-color: var(--primary-color);
-  color: red
+
+  width: 100%;
 }
 
 .rangePriceInput {
   accent-color: var(--primary-color);
-
+  cursor: pointer;
 }
 
 .tagLists {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 1rem;
 }
 
 
@@ -60,8 +61,44 @@
   border-bottom: 1px solid var(--primary-color);
   color: var(--primary-color);
   cursor: pointer !important;
+
+}
+
+.tagLists label {
+  cursor: pointer;
 }
 
 .activeLabel {
   color: red !important;
+}
+
+.latestProductList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media screen and (max-width: 972px) {
+  .foodMenuContainer {
+
+    flex-direction: column;
+  }
+
+  .foodMenuContainer .menuFood {
+    width: 100%;
+    order: 2;
+
+  }
+
+  .foodMenuContainer .filterFood {
+    width: 100%;
+    order: 1;
+  }
+
+  .foodMenuContainer .filterFood .listTypeFood {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
 }

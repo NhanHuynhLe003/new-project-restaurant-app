@@ -8,6 +8,7 @@ const nextConfig = {
       "images.unsplash.com",
       "th.bing.com",
       "i.pinimg.com",
+      "placehold.co",
     ],
     unoptimized: true,
   },

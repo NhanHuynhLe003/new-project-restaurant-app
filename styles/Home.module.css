@@ -113,11 +113,169 @@
   margin-left: 0.5rem;
 }
 
-.shortTitle {}
+/* cate card */
+.cardContainerCate {
+  position: relative;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 200ms;
+}
+
+
+
+.hoverCardCate {
+  position: absolute;
+  z-index: 5;
+  left: 1.75rem;
+  top: 50%;
+  transform: translate(0, -50%);
+  background: transparent;
+  border-radius: 8px;
+  display: none;
+
+}
+
+.cardContainerCate:hover .hoverCardCate {
+  display: block;
+
+}
+
+
+.hoverCardCate .cateFoodDiscount {
+  color: var(--primary-color);
+  background-color: #fff;
+  width: fit-content;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin-left: auto;
+
+}
+
+.hoverCardCate .cateFoodType {
+  color: #fff;
+  background-color: var(--primary-color);
+  font-weight: 600;
+  width: fit-content;
+  padding: 0.5rem 2rem;
+  border-radius: 0 8px 8px 0;
+  margin-top: 12px;
+}
+
+.cardCate {
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.cardCate img {
+  border-radius: 8px;
+}
+
+.gridImage {
+  width: 50%;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 1rem;
+}
+
+.gridImage .imgItem {
+  border-radius: 8px;
+}
+
+.gridImage .imgItem img {
+  border-radius: 8px;
+}
+
+.gridImage .img01 {
+  grid-column: 1/5;
+
+}
+
+.gridImage .img02 {
+  grid-column: 5/9;
+
+}
+
+.gridImage .img01 {
+  align-self: end;
+}
+
+.gridImage .img02 {
+  align-self: end;
+}
+
+.gridImage .img03+.img04+.img05 {
+  align-self: start;
+}
+
+.gridImage .img03 {
+  grid-column: 1/4;
+
+}
+
+.gridImage .img04 {
+  grid-column: 4/7;
+
+}
+
+.gridImage .img05 {
+  grid-column: 7/9;
+
+}
+
+.gridImage .img05 img:nth-child(2) {
+  margin-top: 1rem;
+}
+
+
+.rightReasonSection {
+  width: 50%;
+}
+
+/* achievement */
+.achievement {
+  background-image: url('../assets/images/bg_achievement.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 6rem 0;
+  position: relative;
+  left: 0;
+  right: 0;
+}
+
+.achieveContainer {
+  width: 60%;
+  margin: 0 auto;
+}
+
+.blurAchievement {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/*feedback*/
+.dotCarouselFeedBack li {
+  background-color: var(--primary-color);
+}
 
 @media (max-width: 600px) {
   .grid {
     width: 100%;
     flex-direction: column;
+  }
+
+  .gridImage {
+    width: 100%;
+    order: 2;
+  }
+
+  .rightReasonSection {
+    order: 1;
+    width: 100%;
   }
 }

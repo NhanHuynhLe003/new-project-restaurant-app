@@ -1,6 +1,7 @@
 import { CheckOutlined } from "@ant-design/icons";
-import { Box, Stack } from "@mui/material";
+import { Box, CircularProgress, Stack } from "@mui/material";
 import { Typography, Button } from "@mui/material";
+import { useRouter } from "next/router";
 import * as React from "react";
 
 export interface FoodTitleSectionProps {
@@ -8,7 +9,8 @@ export interface FoodTitleSectionProps {
   title: string;
   desc: string;
   shortTitle: string;
-  listCheck: string[];
+  listCheck?: string[];
+  hiddenButton?: boolean;
 }
 
 export default function FoodTitleSection({
@@ -16,19 +18,29 @@ export default function FoodTitleSection({
   shortTitle,
   title,
   desc,
-  listCheck,
+  listCheck = [],
+  hiddenButton = false,
 }: FoodTitleSectionProps) {
-  const headTitle = title.split(" ")[0];
-  const tailTitle = title.split(" ").splice(1).join(" ");
+  const headTitle = title.split(" ")[0].slice(0, 2);
+  const tailTitle =
+    title.split(" ")[0].slice(2) + " " + title.split(" ").splice(1).join(" ");
+  const [isLoadingMenu, setIsLoadingMenu] = React.useState(false);
+  const router = useRouter();
+
+  function handleSeeMenu() {
+    setIsLoadingMenu(true);
+    router.push("/menu");
+  }
+
   return (
-    <Box sx={{ width: width }}>
+    <Box width={{ xs: "100%", sm: width }}>
       <Typography sx={{ color: "var(--primary-color)" }} variant="h5">
         {shortTitle}
       </Typography>
       <Typography variant="h3" color={"var(--white)"}>
         <Box component={"span"} color={"var(--primary-color)"}>
           {headTitle}
-        </Box>{" "}
+        </Box>
         {tailTitle}
       </Typography>
       <br />
@@ -55,7 +67,10 @@ export default function FoodTitleSection({
         ))}
       </Box>
       <Button
+        onClick={handleSeeMenu}
+        disabled={isLoadingMenu}
         sx={{
+          display: hiddenButton ? "none" : "",
           backgroundColor: "var(--primary-color)",
           borderRadius: 5,
           padding: "0.5rem 1.5rem",
@@ -67,6 +82,17 @@ export default function FoodTitleSection({
           },
         }}
       >
+        {
+          <CircularProgress
+            style={{
+              width: "1.25rem",
+              height: "1.25rem",
+              color: "var(--white)",
+              marginRight: "0.5rem",
+              display: `${isLoadingMenu ? "block" : "none"}`,
+            }}
+          ></CircularProgress>
+        }{" "}
         See Menu
       </Button>
     </Box>

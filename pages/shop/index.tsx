@@ -11,7 +11,7 @@ import {
   Progress,
 } from "antd";
 
-import foodTags from "../../jsons/foodtags.json";
+import foodTags from "../../jsons/tagsV2.json";
 export interface MenuPageProps {
   foodListData: FoodModel[];
 }
@@ -20,13 +20,14 @@ import styles from "../../styles/menu/menu.module.css";
 import amplifyConfig from "../../amplifyconfig.json";
 import { API, Amplify } from "aws-amplify";
 import clsx from "clsx";
-import FoodItem from "../../components/menu/foodItem";
-import FoodLatestItem from "../../components/menu/foodLatestItem";
+import FoodItem from "../../components/shop/foodItem";
+import FoodLatestItem from "../../components/shop/foodLatestItem";
 import { GetStaticProps, GetStaticPropsContext } from "next";
 import { FoodModel, NextPageWithLayout } from "../../models";
 import { handleConvertObjectDdb } from "../../utils/handleResDataDynamodb";
 import Link from "next/link";
 import { MainLayout } from "../../components/layouts/main";
+import { Divider } from "@mui/material";
 
 const API_GW_NAME = "ag-manage-restaurant-project";
 Amplify.configure(amplifyConfig);
@@ -76,16 +77,7 @@ const dishes = [
   // ... other dishes
 ];
 
-const food_type_list = [
-  "Pizza",
-  "Burger",
-  "Chicken",
-  "Fried",
-  "Taco",
-  "Sushi",
-  "Soft Drink",
-  "Uncategorized",
-];
+const food_type_list = ["food", "drink", "other", "uncategorized"];
 function paginate(products: FoodModel[], itemsPerPage = 10, currentPage = 1) {
   return products.slice(
     (currentPage - 1) * itemsPerPage,
@@ -117,6 +109,15 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
     paginate(foodListData, 10, 1)
   );
 
+  const checkTagDuplicate: { [index: string]: any } = {};
+
+  const listTagInFoodListData = foodListData.flatMap(
+    (foodObj) => foodObj.food_tags && Object.keys(foodObj.food_tags)
+  );
+  const foodTagsHandled = listTagInFoodListData.filter(
+    (tag) => tag && !checkTagDuplicate[tag] && (checkTagDuplicate[tag] = true)
+  );
+
   interface FilterData {
     // Assuming filterData has a category property that is an array of strings
     category: string[];
@@ -131,8 +132,15 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
     tags: [],
   };
   const [filterData, setFilterData] = React.useState(initialFilterData);
+
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [totalPageFiltered, setTotalPageFiltered] = React.useState(
+    foodListData.length
+  );
+
   React.useEffect(() => {
-    setFoodListPerPage(paginate(foodListData, 10, 1));
+    //reset data before handle filter
+    setFoodListPerPage(paginate(foodListData, 9, 1));
 
     const newDataFoodList = [...foodListData];
     if (filterData.searchInput !== "") {
@@ -162,12 +170,8 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
 
     let listFoodTypes = [...newDataFoodList];
     if (filterData.category.length > 0) {
-      listFoodTypes = newDataFoodList.filter(
-        (food) =>
-          food.food_tags &&
-          Object.keys(food.food_tags)?.some((tag) =>
-            filterData.category.includes(tag)
-          )
+      listFoodTypes = newDataFoodList.filter((food) =>
+        filterData.category.includes(food.food_type)
       );
     }
 
@@ -176,9 +180,16 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
       listFoodTags,
       listFoodTypes
     );
-
+    setCurrentPage(1);
+    setTotalPageFiltered(listCommondFood.length);
     setFoodListPerPage(listCommondFood);
   }, [filterData]);
+
+  React.useEffect(() => {
+    const newListPerPage = paginate(foodListData, 9, currentPage);
+
+    setFoodListPerPage(newListPerPage);
+  }, [currentPage]);
 
   function handleSearchInput(value: string, event: any) {
     const dataSearch = { ...filterData };
@@ -191,13 +202,8 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
     setFilterData(priceData);
   }
 
-  function handlePagination(page: number) {
-    const newList = paginate(foodListData, 10, page);
-    setFoodListPerPage(newList);
-  }
-
   function handleFoodTypes(e: any) {
-    const val: string = e.target.value;
+    const val: string = e.target.id.replace("type_", "");
     const data = { ...filterData };
 
     if (!data.category.includes(val)) {
@@ -210,7 +216,7 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
   }
 
   function handleFoodTags(e: any) {
-    const val: string = e.target.value;
+    const val: string = e.target.id.replace("tag_", "");
     const data = { ...filterData };
 
     if (!data.tags.includes(val)) {
@@ -233,7 +239,7 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
               {foodListPerPage ? (
                 foodListPerPage.map((dish, index) => (
                   <Col
-                    lg={{ span: 8 }}
+                    xl={{ span: 8 }}
                     sm={{ span: 12 }}
                     span={24}
                     key={dish.food_id + index}
@@ -249,12 +255,16 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
             <br />
             <Pagination
               style={{ textAlign: "center" }}
-              onChange={handlePagination}
-              total={foodListPerPage.length}
-              // current={1}
+              onChange={(page) => setCurrentPage(page)}
+              total={totalPageFiltered}
+              current={currentPage}
               showSizeChanger={false}
             />
+            <br />
+            <br />
           </div>
+          <br />
+          <br />
           <div className={styles.filterFood}>
             <Card>
               <Input.Search
@@ -267,23 +277,26 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
 
               <Typography.Title level={4}>Category</Typography.Title>
               <br />
-              {food_type_list.map((type, index) => {
-                return (
-                  <>
-                    <Checkbox
-                      onChange={handleFoodTypes}
-                      name="category"
-                      className={styles.cateFoodCheckbox}
-                      key={index}
-                      value={type}
-                    >
-                      {type}
-                    </Checkbox>
-                    <br />
-                    <br />
-                  </>
-                );
-              })}
+              <div className={styles.listTypeFood}>
+                {food_type_list.map((type, index) => {
+                  return (
+                    <>
+                      <Checkbox
+                        onChange={handleFoodTypes}
+                        name="category"
+                        className={styles.cateFoodCheckbox}
+                        // style={{ color: "var(--primary-color)" }}
+                        key={index}
+                        id={"type_" + type}
+                      >
+                        {type}
+                      </Checkbox>
+                      <br />
+                      <br />
+                    </>
+                  );
+                })}
+              </div>
               <Typography.Title level={4}>Filter By Price</Typography.Title>
               <br />
               <input
@@ -297,47 +310,65 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
                 onChange={handleGetRange}
               />
               <div>
-                <b>less than: </b>
+                <b>price less than: </b>
                 <span>{filterData.priceRange}</span>
               </div>
-
+              <br />
               <Typography.Title level={4}>Latest Products</Typography.Title>
               <br />
               <div className={styles.latestProductList}>
-                <FoodLatestItem />
-                <FoodLatestItem />
-                <FoodLatestItem />
-                <FoodLatestItem />
+                {foodListData
+                  ? foodListData
+                      .sort(
+                        (a, b) => Number(b.updated_at) - Number(a.updated_at)
+                      )
+                      .map(
+                        (food, index) =>
+                          index < 4 && (
+                            <FoodLatestItem
+                              type={food.food_type}
+                              id={food.food_id}
+                              img={food.food_img}
+                              name={food.food_name}
+                              price={food.food_price}
+                              rating={food.food_rating}
+                              key={"latest_product_" + food.food_id}
+                            />
+                          )
+                      )
+                  : "loading . . ."}
               </div>
 
+              <br />
               <Typography.Title level={4}>Product Tags</Typography.Title>
               <br />
               <div className={styles.tagLists}>
-                {foodTags.map((tag, index) => {
-                  return (
-                    <div className={styles.tag} key={tag}>
-                      <label
-                        className={clsx(styles.checkboxLabel, {
-                          [styles.activeLabel]: filterData.tags.includes(tag),
-                        })}
-                        htmlFor={tag}
-                      >
-                        {tag}
-                      </label>
-                      <input
-                        onChange={(e) => handleFoodTags(e)}
-                        name={tag}
-                        value={tag}
-                        type="checkbox"
-                        className={styles.checkBoxTag}
-                        id={tag}
-                        style={{ display: "none" }}
-                      />
-                    </div>
-                  );
+                {foodTagsHandled.map((tag, index) => {
+                  if (tag)
+                    return (
+                      <div className={styles.tag} key={tag}>
+                        <label
+                          className={clsx(styles.checkboxLabel, {
+                            [styles.activeLabel]: filterData.tags.includes(tag),
+                          })}
+                          htmlFor={"tag_" + tag}
+                        >
+                          {tag}
+                        </label>
+                        <input
+                          onChange={(e) => handleFoodTags(e)}
+                          name={tag}
+                          type="checkbox"
+                          className={styles.checkBoxTag}
+                          id={"tag_" + tag}
+                          style={{ display: "none" }}
+                        />
+                      </div>
+                    );
                 })}
               </div>
             </Card>
+            <Divider></Divider>
           </div>
         </div>
       </div>

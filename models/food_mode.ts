@@ -10,8 +10,10 @@ export interface FoodModel {
   food_ingredients?: string[];
   food_tags?: string[];
   food_price: number;
-  food_discount: [];
+  food_discount: string;
   food_availability: boolean;
   created_at: string;
   updated_at: string;
+  food_review?: number;
+  food_info?: string;
 }

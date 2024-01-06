@@ -1,6 +1,13 @@
 .productItemLatest {
     display: flex;
     gap: 8px;
+    align-items: center;
+}
+
+.productItemLatest:hover {
+    box-shadow: 0 0 4px var(--primary-color);
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .productItemLatest .imgContainer {
@@ -19,4 +26,10 @@
     display: flex;
     margin: 4px 0;
     gap: 4px;
+}
+
+.productItemLatest .price {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--primary-color);
 }

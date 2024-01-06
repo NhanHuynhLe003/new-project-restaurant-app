@@ -1,0 +1,162 @@
+[
+  {
+    "username": "user1",
+    "img": "user1.jpg",
+    "rating": 4.5,
+    "commentDate": "2023-01-05",
+    "comment": "Great product! It exceeded my expectations.",
+    "feedbackImages": ["feedback1_1.jpg", "feedback1_2.jpg"]
+  },
+  {
+    "username": "user2",
+    "img": "user2.jpg",
+    "rating": 3.0,
+    "commentDate": "2023-01-10",
+    "comment": "Average product. Could be better.",
+    "feedbackImages": ["feedback2_1.jpg"]
+  },
+  {
+    "username": "user3",
+    "img": "user3.jpg",
+    "rating": 5.0,
+    "commentDate": "2023-01-15",
+    "comment": "Excellent service and fast delivery!",
+    "feedbackImages": ["feedback3_1.jpg", "feedback3_2.jpg"]
+  },
+  {
+    "username": "user4",
+    "img": "user4.jpg",
+    "rating": 4.0,
+    "commentDate": "2023-01-20",
+    "comment": "Good quality. I'm satisfied with my purchase.",
+    "feedbackImages": ["feedback4_1.jpg"]
+  },
+  {
+    "username": "user5",
+    "img": "user5.jpg",
+    "rating": 2.5,
+    "commentDate": "2023-01-25",
+    "comment": "Not what I expected. Disappointed.",
+    "feedbackImages": ["feedback5_1.jpg"]
+  },
+  {
+    "username": "user6",
+    "img": "user6.jpg",
+    "rating": 5,
+    "commentDate": "2023-02-01",
+    "comment": "Impressive product! Highly recommended.",
+    "feedbackImages": ["feedback6_1.jpg", "feedback6_2.jpg"]
+  },
+  {
+    "username": "user7",
+    "img": "user7.jpg",
+    "rating": 3.5,
+    "commentDate": "2023-02-05",
+    "comment": "Decent quality for the price.",
+    "feedbackImages": ["feedback7_1.jpg"]
+  },
+  {
+    "username": "user8",
+    "img": "user8.jpg",
+    "rating": 4.5,
+    "commentDate": "2023-02-10",
+    "comment": "Great customer service! Prompt response.",
+    "feedbackImages": ["feedback8_1.jpg"]
+  },
+  {
+    "username": "user9",
+    "img": "user9.jpg",
+    "rating": 4,
+    "commentDate": "2023-02-15",
+    "comment": "Average product. Nothing special.",
+    "feedbackImages": ["feedback9_1.jpg"]
+  },
+  {
+    "username": "user10",
+    "img": "user10.jpg",
+    "rating": 4.5,
+    "commentDate": "2023-02-20",
+    "comment": "Fast shipping and good packaging.",
+    "feedbackImages": ["feedback10_1.jpg"]
+  },
+  {
+    "username": "user11",
+    "img": "user11.jpg",
+    "rating": 2.0,
+    "commentDate": "2023-02-25",
+    "comment": "Poor quality. Wouldn't recommend.",
+    "feedbackImages": ["feedback11_1.jpg"]
+  },
+  {
+    "username": "user12",
+    "img": "user12.jpg",
+    "rating": 5,
+    "commentDate": "2023-03-01",
+    "comment": "Absolutely love it! Exactly what I needed.",
+    "feedbackImages": ["feedback12_1.jpg", "feedback12_2.jpg"]
+  },
+  {
+    "username": "user13",
+    "img": "user13.jpg",
+    "rating": 3.5,
+    "commentDate": "2023-03-05",
+    "comment": "Meh. Could have been better.",
+    "feedbackImages": ["feedback13_1.jpg"]
+  },
+  {
+    "username": "user14",
+    "img": "user14.jpg",
+    "rating": 4.5,
+    "commentDate": "2023-03-10",
+    "comment": "High-quality product. Worth the price.",
+    "feedbackImages": ["feedback14_1.jpg", "feedback14_2.jpg"]
+  },
+  {
+    "username": "user15",
+    "img": "user15.jpg",
+    "rating": 3.5,
+    "commentDate": "2023-03-15",
+    "comment": "Good value for money. Happy with my purchase.",
+    "feedbackImages": ["feedback15_1.jpg"]
+  },
+  {
+    "username": "user16",
+    "img": "user16.jpg",
+    "rating": 4.0,
+    "commentDate": "2023-03-20",
+    "comment": "Nice product. Met my expectations.",
+    "feedbackImages": ["feedback16_1.jpg"]
+  },
+  {
+    "username": "user17",
+    "img": "user17.jpg",
+    "rating": 3.5,
+    "commentDate": "2023-03-25",
+    "comment": "Average. Nothing extraordinary.",
+    "feedbackImages": ["feedback17_1.jpg"]
+  },
+  {
+    "username": "user18",
+    "img": "user18.jpg",
+    "rating": 4.5,
+    "commentDate": "2023-03-30",
+    "comment": "Solid product. Happy with the purchase.",
+    "feedbackImages": ["feedback18_1.jpg"]
+  },
+  {
+    "username": "user19",
+    "img": "user19.jpg",
+    "rating": 2.5,
+    "commentDate": "2023-04-05",
+    "comment": "Not impressed. Quality could be better.",
+    "feedbackImages": ["feedback19_1.jpg"]
+  },
+  {
+    "username": "user20",
+    "img": "user20.jpg",
+    "rating": 4.0,
+    "commentDate": "2023-04-10",
+    "comment": "Satisfied with the purchase. Good value for money.",
+    "feedbackImages": ["feedback20_1.jpg"]
+  }
+]

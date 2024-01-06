@@ -1,0 +1,55 @@
+.SubscribeInput {
+    width: 100%;
+    height: 3rem;
+    border: 1px solid var(--primary-color);
+    padding: 1rem;
+    outline: none;
+    font-size: 1rem;
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.SubscribeInput::-webkit-input-placeholder {
+    color: #fff;
+    opacity: 0.6;
+}
+
+
+
+.linkContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-left: 0;
+
+}
+
+.linkNavFooter {
+    color: #fff;
+    font-size: 20px;
+    display: flex;
+    gap: 1rem;
+}
+
+.linkNavFooter:hover {
+    color: var(--primary-color);
+    font-size: 20px;
+}
+
+.icProvider {
+    padding: 0.5rem 1rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.icProvider:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+@media screen and (max-width: 600px) {
+    .lastColFooter {
+        margin-top: 3rem;
+    }
+}

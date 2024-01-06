@@ -4,6 +4,9 @@ import "@aws-amplify/ui-react/styles.css";
 import { Auth, Amplify, API } from "aws-amplify";
 import amplifyConfig from "../amplifyconfig.json";
 import { FoodModel } from "../models";
+import { useRouter } from "next/router";
+import { Box, Button, Stack, Typography } from "@mui/material";
+
 const { v4: uuidv4 } = require("uuid");
 
 const API_GW_NAME = "ag-manage-restaurant-project";
@@ -14,38 +17,84 @@ Amplify.configure(amplifyConfig);
 export interface LoginProps {}
 
 export default function Login(props: LoginProps) {
-  const handleCreateFood = async function (payload: FoodModel) {
-    try {
-      const user = await Auth.currentSession(); // lay ra thong tin user
-      const idToken = await user.getIdToken().getJwtToken();
-      console.log("idToken:::", idToken);
+  const router = useRouter();
+  const numRef = React.useRef(10);
+  const [userLogin, setUser] = React.useState<any>();
+  const [countDown, setCountDown] = React.useState(10);
 
-      //bắt buộc config api key về throtling ... thì mới sử dụng được
-      const headerReq = {
-        body: payload,
-        headers: {
-          Authorization: idToken,
-          "x-api-key": API_KEY,
-        },
-      };
-      const food = await API.post(API_GW_NAME, "/foods", headerReq);
-    } catch (err) {
-      console.error("err:::::", err);
+  React.useEffect(() => {
+    if (userLogin) {
+      //sau khi user đăng nhập thành công mới tiến hành đếm ngược và chuyển về trang chính
+      const interval = setInterval(
+        () =>
+          setCountDown((prev) => {
+            if (prev === 0) {
+              router.push("/");
+              return prev;
+            }
+            return prev - 1;
+          }),
+        1000
+      );
+      return () => clearInterval(interval);
     }
-  };
+  }, [userLogin]);
 
   return (
-    <div>
-      <h1 style={{ textAlign: "center" }}>Login</h1>
+    <Box
+      component={"main"}
+      bgcolor={"#222222"}
+      minHeight={"100vh"}
+      display={"flex"}
+      flexDirection={"column"}
+      alignItems={"center"}
+      justifyContent={"center"}
+    >
+      <Typography
+        color="var(--primary-color)"
+        variant="h3"
+        textAlign={"center"}
+        fontWeight={"bold"}
+        my={"2rem"}
+      >
+        Login
+      </Typography>
       <Authenticator signUpAttributes={["name"]}>
-        {({ signOut, user }) => (
-          <main>
-            <h1>Hello {user?.username}</h1>
+        {({ signOut, user }) => {
+          if (user) {
+            setUser(user);
+          }
+          return (
+            <Box>
+              <Typography
+                color="var(--primary-color)"
+                variant="h3"
+                flexGrow={"1"}
+                my="1rem"
+              >
+                Welcome {user?.attributes && user?.attributes.name}
+              </Typography>
 
-            <button onClick={signOut}>Sign out</button>
-          </main>
-        )}
+              <Box textAlign={"center"}>
+                <Button
+                  variant="contained"
+                  onClick={() => router.push("/")}
+                  sx={{
+                    color: "var(--white)",
+                    backgroundColor: "var(--primary-color)",
+                    ":hover": {
+                      color: "var(--primary-color)",
+                      backgroundColor: "var(--white)",
+                    },
+                  }}
+                >
+                  Return Home Page After ({countDown})
+                </Button>
+              </Box>
+            </Box>
+          );
+        }}
       </Authenticator>
-    </div>
+    </Box>
   );
 }

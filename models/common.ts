@@ -5,7 +5,7 @@ import { EmotionCache } from "@emotion/react";
 
 export interface LayoutProps {
   children: ReactNode;
-  lightMode: boolean;
+  lightMode?: boolean;
 }
 
 export type NextPageWithLayout = NextPage & {

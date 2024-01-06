@@ -1,6 +1,9 @@
 .NavBar {
     background-color: var(--dark-1);
+
 }
+
+
 
 .NavContainer {
     width: 80%;
@@ -12,24 +15,32 @@
 .listPage {
     display: flex;
     justify-content: space-between;
+    padding-left: 0;
 }
 
 .listPage li {
     list-style-type: none;
     border-bottom: 2px solid transparent;
     transition: 200ms;
+
 }
 
 .listPage li:hover {
-    color: var(--primary-color);
+
     border-bottom: 2px solid var(--primary-color);
     transform: scale(1.2);
     cursor: pointer;
+
+}
+
+.listPage li:hover a {
+    color: var(--primary-color);
 }
 
 .pageActionControl {
     display: flex;
-    gap: 16px;
+    gap: 24px;
+    padding-left: 0
 }
 
 .pageActionControl li {
@@ -50,4 +61,27 @@
     color: var(--primary-color);
     border-bottom: 2px solid var(--primary-color);
     transform: scale(1.2);
+}
+
+.routeLink {
+    text-decoration: none;
+    color: #fff;
+}
+
+
+.activeLink {
+    color: var(--primary-color);
+
+    font-weight: 600;
+}
+
+@media screen and (max-width: 579px) {
+    .LogoPage {
+        padding-top: 1rem;
+        text-align: center;
+    }
+
+    .NavBar {
+        padding-bottom: 1rem;
+    }
 }

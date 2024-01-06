@@ -1,24 +1,30 @@
 import { LayoutProps } from "../../models";
-import React from "react";
+import React, { useEffect } from "react";
 import { Header } from "../common/header";
 import { Footer } from "../common/footer";
 
 import { Col, Row } from "antd";
 import { Box } from "@mui/material";
+import { useRouter } from "next/router";
 export function MainLayout({ children, lightMode }: LayoutProps) {
   return (
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: lightMode ? "var(--dark-1)" : "",
+        backgroundColor: lightMode ? "var(--dark-2)" : "",
       }}
     >
       <Header />
 
-      <main
+      <Box
+        component={"main"}
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"center"}
+        minHeight={"100vh"}
+        pt={{ xs: "10rem", sm: "6rem" }}
         style={{
           flexGrow: 1,
-          paddingTop: "32px",
         }}
       >
         <Row justify={"center"}>
@@ -26,7 +32,7 @@ export function MainLayout({ children, lightMode }: LayoutProps) {
             {children}
           </Col>
         </Row>
-      </main>
+      </Box>
       <Footer />
     </Box>
   );

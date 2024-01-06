@@ -13,9 +13,17 @@ import {
 import { FoodModel } from "../../models";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
-export interface FoodItemProps {}
+import { Box, Stack } from "@mui/material";
+export interface FoodItemProps {
+  vertical?: boolean;
+  horizontal?: boolean;
+}
 
-export default function FoodItem(props: FoodModel) {
+export default function FoodItem({
+  vertical,
+  horizontal,
+  ...props
+}: FoodModel & FoodItemProps) {
   // const [isHide, setHide] = React.useState(true);
   const router = useRouter();
 
@@ -42,12 +50,27 @@ export default function FoodItem(props: FoodModel) {
   }
 
   function handleClickViewDetail(url: string) {
-    console.log(url);
-
     router.push(url);
   }
   return (
     <div className={styles.cardContainer}>
+      <Box
+        sx={{
+          display: props.food_discount ? "flex" : "none",
+          alignSelf: "flex-start",
+          background: "red",
+          color: "#fff",
+          fontWeight: "600",
+          position: "absolute",
+          top: "-8px",
+          left: "-1.5rem",
+          transform: "rotate(-45deg)",
+          padding: "1rem 1.25rem 0.25rem 1.25rem",
+          textAlign: "center",
+        }}
+      >
+        {props.food_discount}%
+      </Box>
       <div className={clsx(styles.cardControl)}>
         <ConfigProvider
           theme={{
@@ -65,7 +88,7 @@ export default function FoodItem(props: FoodModel) {
             className={clsx(styles.viewDetail)}
             onClick={() =>
               handleClickViewDetail(
-                `/menu/${props.food_id}-type=${props.food_type}`
+                `/shop/${props.food_id}-type=${props.food_type}`
               )
             }
             type="primary"
@@ -78,38 +101,48 @@ export default function FoodItem(props: FoodModel) {
         </ConfigProvider>
       </div>
       <div className={styles.imgContainer}>
-        <Image src={props.food_img} alt="foodImage" width={312} height={267} />
+        <Image
+          src={props.food_img ? props.food_img : "https://placehold.co/312x250"}
+          alt="foodImage"
+          width={0}
+          height={0}
+          style={{
+            width: "100%",
+            height: "auto",
+          }}
+        />
       </div>
-      <Row className={clsx(styles.foodNameContainer)}>
-        <Col className={clsx(styles.foodName, "Medium-Text-Bold")}>
+      <Stack textAlign={"center"} gap={"0.25rem"} pt={"1rem"}>
+        <Box
+          color={"var(--dark-1)"}
+          fontWeight={"bold"}
+          fontSize={{ md: "20px", sm: "16px" }}
+        >
           {props.food_name}
-        </Col>
-      </Row>
-      <Row justify={"center"}>
-        <Col span={100} className={styles.ratings}>
-          {ratingList.map((star) => star)}
-        </Col>
-      </Row>
-      <div className={clsx(styles.priceInfo)}>
-        <div
-          className={clsx(styles.price, "Normal-Text-Regular", {
-            [styles.hidePrice]: Boolean(!props.food_discount),
-          })}
-        >
-          {props.food_discount
-            ? "$" +
-              (Number(props.food_price) * (100 - Number(props.food_discount))) /
-                100
-            : ""}
+        </Box>
+        <Box>{ratingList.map((star) => star)}</Box>
+        <div className={clsx(styles.priceInfo)}>
+          <div
+            className={clsx(styles.price, "Normal-Text-Regular", {
+              [styles.hidePrice]: Boolean(!props.food_discount),
+            })}
+          >
+            {props.food_discount
+              ? "$" +
+                (Number(props.food_price) *
+                  (100 - Number(props.food_discount))) /
+                  100
+              : ""}
+          </div>
+          <div
+            className={clsx(styles.price, "Normal-Text-Regular", {
+              [styles.priceDeleted]: Boolean(props.food_discount),
+            })}
+          >
+            ${props.food_price}
+          </div>
         </div>
-        <div
-          className={clsx(styles.price, "Normal-Text-Regular", {
-            [styles.priceDeleted]: Boolean(props.food_discount),
-          })}
-        >
-          ${props.food_price}
-        </div>
-      </div>
+      </Stack>
     </div>
   );
 }
