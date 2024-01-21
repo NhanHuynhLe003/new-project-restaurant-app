@@ -1,4 +1,33 @@
 .centerCol {
     display: flex;
     align-items: center;
+    justify-content: center;
+}
+
+.titleItemCart {
+    font-size: 14px;
+}
+
+.imgCartItem {
+    width: 30%;
+    height: auto;
+}
+
+.itemCartCard {
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 480px) {
+    .hideCol {
+        display: none;
+    }
+
+    .titleItemCart {
+        font-size: 12px;
+    }
+
+    .imgCartItem {
+        width: 40%;
+    }
+
 }

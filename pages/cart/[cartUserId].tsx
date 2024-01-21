@@ -66,27 +66,27 @@ export default function CartPage({ cartPayload }: CartPageProps) {
         <Box sx={{ mb: "10rem" }}>
           <Box>
             <Row>
-              <Col sm={{ span: 8 }}>
+              <Col sm={{ span: 8 }} xs={{ span: 0 }}>
                 <Typography variant="h5" component={"h2"} fontWeight={"600"}>
                   Product
                 </Typography>
               </Col>
-              <Col sm={{ span: 4 }}>
+              <Col sm={{ span: 4 }} xs={{ span: 0 }}>
                 <Typography variant="h5" component={"h2"} fontWeight={"600"}>
                   Price
                 </Typography>
               </Col>
-              <Col sm={{ span: 4 }}>
+              <Col sm={{ span: 4 }} xs={{ span: 0 }}>
                 <Typography variant="h5" component={"h2"} fontWeight={"600"}>
                   Quantity
                 </Typography>
               </Col>
-              <Col sm={{ span: 4 }}>
+              <Col sm={{ span: 4 }} xs={{ span: 0 }}>
                 <Typography variant="h5" component={"h2"} fontWeight={"600"}>
                   Total
                 </Typography>
               </Col>
-              <Col sm={{ span: 4 }}>
+              <Col sm={{ span: 4 }} xs={{ span: 0 }}>
                 <Typography variant="h5" component={"h2"} fontWeight={"600"}>
                   Remove
                 </Typography>
@@ -114,17 +114,27 @@ export default function CartPage({ cartPayload }: CartPageProps) {
               })
             ) : (
               <h4
-                style={{ textAlign: "center", marginTop: "10%", opacity: 0.4 }}
+                style={{
+                  textAlign: "center",
+                  margin: "10% auto",
+                  opacity: 0.4,
+                  width: "90%",
+                }}
               >
                 Chưa có sản phẩm trong giỏ hàng
               </h4>
             )}
           </Box>
-          <Stack flexDirection={"row"} gap={"1rem"} mt={"8rem"}>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            gap={"1rem"}
+            mt={"8rem"}
+          >
             <Stack
               sx={{
-                width: "50%",
+                width: { sm: "50%", xs: "90%" },
                 border: "1px solid #ccc",
+                mx: { xs: "auto" },
                 p: "1rem 1rem 2rem 1rem",
                 borderRadius: "6px",
                 height: "fit-content",
@@ -147,9 +157,11 @@ export default function CartPage({ cartPayload }: CartPageProps) {
             </Stack>
             <Stack
               sx={{
-                width: "50%",
+                width: { sm: "50%", xs: "90%" },
                 border: "1px solid #ccc",
                 // p: "1rem",
+                mx: { xs: "auto" },
+
                 position: "relative",
                 borderRadius: "6px",
               }}
@@ -224,8 +236,8 @@ export default function CartPage({ cartPayload }: CartPageProps) {
           </Stack>
         </Box>
       ) : (
-        <Box>
-          <h2>Giỏ hàng không tồn tại</h2>
+        <Box sx={{ textAlign: "center" }}>
+          <h2 style={{ width: "90%" }}>Giỏ hàng không tồn tại</h2>
         </Box>
       )}
     </MainLayout>
@@ -237,10 +249,13 @@ export const getServerSideProps: GetServerSideProps<CartPageProps> = async (
 ) => {
   const cartUserId = context.params?.cartUserId;
   const idCart = context.query?.cartId || "cart_001";
-  context.res.setHeader(
-    "Cache-Control",
-    "s-maxage=5, stale-while-revalidate=5"
-  );
+
+  // Tối ưu yêu cầu người dùng
+
+  // context.res.setHeader(
+  //   "Cache-Control",
+  //   "s-maxage=5, stale-while-revalidate=5"
+  // );
 
   let dataResponse: cartModel = {
     cart_cartId: "",

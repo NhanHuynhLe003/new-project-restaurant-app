@@ -14,12 +14,15 @@ import { FoodModel } from "../../models";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { Box, Stack } from "@mui/material";
+import { productCart } from "../../models/cart";
 export interface FoodItemProps {
   vertical?: boolean;
   horizontal?: boolean;
+  handleAddToCart?: (product: productCart) => {};
 }
 
 export default function FoodItem({
+  handleAddToCart,
   vertical,
   horizontal,
   ...props
@@ -81,7 +84,18 @@ export default function FoodItem({
             },
           }}
         >
-          <Button className={clsx(styles.shopBtn)} type="primary">
+          <Button
+            className={clsx(styles.shopBtn)}
+            type="primary"
+            onClick={() =>
+              handleAddToCart &&
+              handleAddToCart({
+                productId: props.food_id,
+                productType: props.food_type,
+                quantity: 1,
+              })
+            }
+          >
             <ShoppingOutlined />
           </Button>
           <Button

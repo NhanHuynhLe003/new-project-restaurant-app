@@ -6,6 +6,7 @@ import {
   Pagination,
   Progress,
   Row,
+  Spin,
   Typography,
 } from "antd";
 import * as React from "react";
@@ -15,8 +16,8 @@ export interface MenuPageProps {
   foodListData: FoodModel[];
 }
 
-import { Divider } from "@mui/material";
-import { API, Amplify } from "aws-amplify";
+import { Alert, Divider, Snackbar } from "@mui/material";
+import { API, Amplify, Auth } from "aws-amplify";
 import clsx from "clsx";
 import { GetStaticProps, GetStaticPropsContext } from "next";
 import amplifyConfig from "../../amplifyconfig.json";
@@ -25,6 +26,8 @@ import FoodItem from "../../components/shop/foodItem";
 import FoodLatestItem from "../../components/shop/foodLatestItem";
 import { FoodModel } from "../../models";
 import { handleConvertObjectDdb } from "../../utils/handleResDataDynamodb";
+import { productCart } from "../../models/cart";
+import { updateProductCart } from "../../utils";
 
 const API_GW_NAME = "ag-manage-restaurant-project";
 Amplify.configure(amplifyConfig);
@@ -105,6 +108,66 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
   const [foodListPerPage, setFoodListPerPage] = React.useState(
     paginate(foodListData, 10, 1)
   );
+
+  const [messageAuth, setMessageAuth] = React.useState({
+    isActive: false,
+    state: 2,
+    message: <span></span>,
+  });
+
+  function handleCloseAlert() {
+    setMessageAuth((prev) => ({ ...prev, isActive: false }));
+  }
+
+  async function handleAddToCart(product: productCart) {
+    try {
+      const user = await Auth.currentUserInfo();
+      const userName = await user.username;
+
+      const apiUpdateCart = `https://svkcor3qaj.execute-api.us-east-1.amazonaws.com/v1/carts`;
+
+      setMessageAuth((prev) => ({
+        ...prev,
+        isActive: true,
+        state: 1,
+        message: (
+          <span>
+            <Spin></Spin>{" "}
+            <span style={{ paddingLeft: "0.5rem", color: "#333" }}>
+              Đang thêm món ăn vào giỏ hàng
+            </span>
+          </span>
+        ),
+      }));
+      const res = await updateProductCart({
+        apiUrl: apiUpdateCart,
+        cartUserId: userName,
+        product,
+      });
+
+      setMessageAuth((prev) => ({
+        ...prev,
+        isActive: true,
+        state: 2,
+        message: (
+          <span>
+            <span>Thêm món ăn thành công</span>
+          </span>
+        ),
+      }));
+    } catch (err) {
+      setMessageAuth((prev) => ({
+        ...prev,
+        isActive: true,
+        state: 0,
+        message: (
+          <span>
+            <span>Thêm món ăn thất bại, kiểm tra lại đăng nhập</span>
+          </span>
+        ),
+      }));
+    }
+  }
 
   const checkTagDuplicate: { [index: string]: any } = {};
 
@@ -227,6 +290,25 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
 
   return (
     <MainLayout lightMode={false}>
+      <Snackbar
+        open={messageAuth.isActive}
+        autoHideDuration={3000}
+        onClose={handleCloseAlert}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity={
+            messageAuth.state === 0
+              ? "error"
+              : messageAuth.state === 1
+              ? "info"
+              : "success"
+          }
+          sx={{ width: "100%" }}
+        >
+          {messageAuth.message}
+        </Alert>
+      </Snackbar>
       <div className={clsx(styles.menuContainer)}>
         <br />
         <br />
@@ -241,7 +323,7 @@ export default function MenuPage({ foodListData }: MenuPageProps) {
                     span={24}
                     key={dish.food_id + index}
                   >
-                    <FoodItem {...dish} />
+                    <FoodItem handleAddToCart={handleAddToCart} {...dish} />
                   </Col>
                 ))
               ) : (

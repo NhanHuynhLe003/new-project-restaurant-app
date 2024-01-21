@@ -55,42 +55,55 @@ export default function FoodDetail({ food, foodList }: FoodDetailProps) {
     setMessageAuth((prev) => ({ ...prev, isActive: false }));
   }
   async function handleAddToCart(product: productCart) {
-    const user = await Auth.currentUserInfo();
-    const userName = await user.username;
+    try {
+      const user = await Auth.currentUserInfo();
+      const userName = await user.username;
 
-    const apiUpdateCart = `https://svkcor3qaj.execute-api.us-east-1.amazonaws.com/v1/carts`;
+      const apiUpdateCart = `https://svkcor3qaj.execute-api.us-east-1.amazonaws.com/v1/carts`;
 
-    setIsAddingProduct((prev) => ({ ...prev, addToCart: true }));
-    setMessageAuth((prev) => ({
-      ...prev,
-      isActive: true,
-      state: 1,
-      message: (
-        <span>
-          <Spin></Spin>{" "}
-          <span style={{ paddingLeft: "0.5rem", color: "#333" }}>
-            Đang thêm món ăn vào giỏ hàng
+      setIsAddingProduct((prev) => ({ ...prev, addToCart: true }));
+      setMessageAuth((prev) => ({
+        ...prev,
+        isActive: true,
+        state: 1,
+        message: (
+          <span>
+            <Spin></Spin>{" "}
+            <span style={{ paddingLeft: "0.5rem", color: "#333" }}>
+              Đang thêm món ăn vào giỏ hàng
+            </span>
           </span>
-        </span>
-      ),
-    }));
-    const res = await updateProductCart({
-      apiUrl: apiUpdateCart,
-      cartUserId: userName,
-      product,
-    });
+        ),
+      }));
+      const res = await updateProductCart({
+        apiUrl: apiUpdateCart,
+        cartUserId: userName,
+        product,
+      });
 
-    setMessageAuth((prev) => ({
-      ...prev,
-      isActive: true,
-      state: 2,
-      message: (
-        <span>
-          <span>Thêm món ăn thành công</span>
-        </span>
-      ),
-    }));
-    setIsAddingProduct((prev) => ({ ...prev, addToCart: false }));
+      setMessageAuth((prev) => ({
+        ...prev,
+        isActive: true,
+        state: 2,
+        message: (
+          <span>
+            <span>Thêm món ăn thành công</span>
+          </span>
+        ),
+      }));
+      setIsAddingProduct((prev) => ({ ...prev, addToCart: false }));
+    } catch (err) {
+      setMessageAuth((prev) => ({
+        ...prev,
+        isActive: true,
+        state: 0,
+        message: (
+          <span>
+            <span>Thêm món ăn thất bại, kiểm tra lại đăng nhập</span>
+          </span>
+        ),
+      }));
+    }
   }
   React.useEffect(() => {
     const handleWindowResize = () => {
