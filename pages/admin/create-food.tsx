@@ -1,4 +1,3 @@
-import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Card, CircularProgress, Typography } from "@mui/material";
@@ -21,10 +20,10 @@ import SwitchField from "../../components/form/switch-field";
 import TextEditor from "../../components/form/text-editor";
 import { MainLayout } from "../../components/layouts/main";
 import UploadFile from "../../components/uploadFile";
+import { useAuth } from "../../contexts/AuthContext";
 import ingredients from "../../jsons/ingredientsV2.json";
 import foodTags from "../../jsons/tagsV2.json";
 import { NextPageWithLayout } from "../../models";
-import { useAuth } from "../../contexts/AuthContext";
 const { v4: uuidv4 } = require("uuid");
 export interface CreateFoodPageProps {}
 

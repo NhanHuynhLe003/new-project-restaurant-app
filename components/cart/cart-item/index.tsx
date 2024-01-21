@@ -6,21 +6,42 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Snackbar,
+  Alert,
 } from "@mui/material";
-import { Col, Rate, Row } from "antd";
+import { Col, Rate, Row, Spin } from "antd";
 import Image, { StaticImageData } from "next/image";
 import * as React from "react";
 import styles from "../../../styles/cart/cart-item.module.css";
-import { productCart } from "../../../models/cart";
+import { cartModel, productCart } from "../../../models/cart";
+import { API } from "aws-amplify";
+import { useRouter } from "next/router";
+const API_GW_NAME = "ag-manage-restaurant-project";
+const API_KEY = "dgt6PuOZHY1Ot9ZXtbN0x1ZpZyRcilJY2phtxcnB";
+
+export interface cartProductProps extends productCart {
+  cartUserId: string;
+  cartId?: string;
+}
 
 export default function CartItem({
+  cartUserId,
+  cartId = "cart_001",
+  productId,
   img,
   name,
   rating,
   quantity,
   price,
-}: productCart) {
+}: cartProductProps) {
   const [prodQuan, setProdQuan] = React.useState(quantity);
+  const [messageAuth, setMessageAuth] = React.useState({
+    isActive: false,
+    state: 1,
+    message: <span></span>,
+  });
+  const router = useRouter();
+
   function handleIncQuan() {
     setProdQuan(prodQuan + 1);
   }
@@ -28,95 +49,159 @@ export default function CartItem({
   function handleDesQuan() {
     setProdQuan(prodQuan - 1);
   }
+  function handleCloseAlert() {
+    setMessageAuth((prev) => ({ ...prev, isActive: false }));
+  }
+
+  async function handleDeleteCart() {
+    const options = {
+      body: {
+        cart_userId: cartUserId, //user so huu cart, co the dung userId khi login
+        cart_cartId: cartId, //tao ngau nhien
+        cart_state: "active", //['active', 'completed', 'failed', 'pending']
+        product: {
+          productId: productId,
+        },
+      },
+    };
+    try {
+      setMessageAuth((prev) => ({
+        ...prev,
+        state: 1,
+        message: (
+          <span>
+            <Spin></Spin>{" "}
+            <span
+              style={{
+                paddingLeft: "1rem",
+                color: "#808080",
+                fontWeight: "bold",
+              }}
+            >
+              Removing Product
+            </span>
+          </span>
+        ),
+        isActive: true,
+      }));
+      const response = await API.del(API_GW_NAME, "/carts/product", options);
+      // dùng useRouter để tiến hành cập nhật dữ liệu
+      router.push(`/cart/${cartUserId}`);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   return (
-    <Row style={{ padding: "1rem", borderBottom: "1px solid #ccc" }}>
-      <Col sm={{ span: 8 }} className={styles.centerCol}>
-        <Stack direction={"row"} gap={"0.5rem"} alignItems={"center"}>
-          <Image
-            src={img || "https://placehold.co/300x150"}
-            alt={`name-product-${name}`}
-            width={0}
-            height={0}
-            style={{ width: "30%", height: "auto" }}
-          ></Image>
-
-          <Box>
-            <Typography component={"p"} fontWeight={"600"} fontSize={"14px"}>
-              {name}
-            </Typography>
-            <Rate allowHalf value={rating || 5} disabled></Rate>
-          </Box>
-        </Stack>
-      </Col>
-      <Col sm={{ span: 4 }} className={styles.centerCol}>
-        {price}đ
-      </Col>
-      <Col sm={{ span: 4 }} className={styles.centerCol}>
-        <Stack
-          direction={"row"}
-          style={{
-            border: "1px solid #ccc",
-            borderRadius: "1rem",
-            width: "fit-content",
-          }}
-          alignItems={"center"}
-        >
-          <button
-            onClick={handleDesQuan}
-            style={{
-              padding: "0.5rem 1rem",
-              border: "none",
-              borderRadius: "16px 0 0 16px",
-              cursor: "pointer",
-            }}
-          >
-            -
-          </button>
-          <input
-            type="text"
-            placeholder="quantity?"
-            value={prodQuan}
-            style={{
-              width: "2rem",
-              textAlign: "center",
-              border: "none",
-            }}
-          ></input>
-          <button
-            onClick={handleIncQuan}
-            style={{
-              cursor: "pointer",
-              padding: "0.5rem 1rem",
-              border: "none",
-              borderRadius: "0 16px 16px 0",
-            }}
-          >
-            +
-          </button>
-        </Stack>
-      </Col>
-      <Col
-        sm={{ span: 4 }}
-        style={{ fontWeight: "bold" }}
-        className={styles.centerCol}
+    <>
+      <Snackbar
+        open={messageAuth.isActive}
+        autoHideDuration={3000}
+        onClose={handleCloseAlert}
       >
-        {Number(price) * Number(prodQuan)}đ
-      </Col>
-      <Col sm={{ span: 4 }} className={styles.centerCol}>
-        <Button
-          variant="text"
-          fullWidth
-          color="inherit"
-          sx={{
-            ":hover": {
-              color: "var(--primary-color)",
-            },
-          }}
+        <Alert
+          onClose={handleCloseAlert}
+          severity={
+            messageAuth.state === 0
+              ? "error"
+              : messageAuth.state === 1
+              ? "info"
+              : "success"
+          }
+          sx={{ width: "100%" }}
         >
-          X
-        </Button>
-      </Col>
-    </Row>
+          {messageAuth.message}
+        </Alert>
+      </Snackbar>
+      <Row style={{ padding: "1rem", borderBottom: "1px solid #ccc" }}>
+        <Col sm={{ span: 8 }} className={styles.centerCol}>
+          <Stack direction={"row"} gap={"0.5rem"} alignItems={"center"}>
+            <Image
+              src={img || "https://placehold.co/300x150"}
+              alt={`name-product-${name}`}
+              width={0}
+              height={0}
+              style={{ width: "30%", height: "auto" }}
+            ></Image>
+
+            <Box>
+              <Typography component={"p"} fontWeight={"600"} fontSize={"14px"}>
+                {name}
+              </Typography>
+              <Rate allowHalf value={rating || 5} disabled></Rate>
+            </Box>
+          </Stack>
+        </Col>
+        <Col sm={{ span: 4 }} className={styles.centerCol}>
+          {price}đ
+        </Col>
+        <Col sm={{ span: 4 }} className={styles.centerCol}>
+          <Stack
+            direction={"row"}
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "1rem",
+              width: "fit-content",
+            }}
+            alignItems={"center"}
+          >
+            <button
+              onClick={handleDesQuan}
+              style={{
+                padding: "0.5rem 1rem",
+                border: "none",
+                borderRadius: "16px 0 0 16px",
+                cursor: "pointer",
+              }}
+            >
+              -
+            </button>
+            <input
+              type="text"
+              placeholder="quantity?"
+              value={prodQuan}
+              style={{
+                width: "2rem",
+                textAlign: "center",
+                border: "none",
+              }}
+            ></input>
+            <button
+              onClick={handleIncQuan}
+              style={{
+                cursor: "pointer",
+                padding: "0.5rem 1rem",
+                border: "none",
+                borderRadius: "0 16px 16px 0",
+              }}
+            >
+              +
+            </button>
+          </Stack>
+        </Col>
+        <Col
+          sm={{ span: 4 }}
+          style={{ fontWeight: "bold" }}
+          className={styles.centerCol}
+        >
+          {Number(price) * Number(prodQuan)}đ
+        </Col>
+        <Col sm={{ span: 4 }} className={styles.centerCol}>
+          <Button
+            onClick={handleDeleteCart}
+            variant="text"
+            fullWidth
+            color="inherit"
+            sx={{
+              ":hover": {
+                color: "var(--primary-color)",
+              },
+            }}
+          >
+            X
+          </Button>
+        </Col>
+      </Row>
+    </>
   );
 }

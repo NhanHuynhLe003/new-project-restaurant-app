@@ -27,7 +27,10 @@ export interface CartPageProps {
 
 export default function CartPage({ cartPayload }: CartPageProps) {
   const router = useRouter();
+  const cartUserId = React.useRef(router.query?.cartUserId);
   const [isCorrectCart, setIsCorrectCart] = React.useState(false);
+  const [totalCartProduct, setTotalCartProduct] = React.useState(0);
+  const [discountPrice, setDiscountPrice] = React.useState(0);
 
   React.useLayoutEffect(() => {
     async function checkCorrectUserCart() {
@@ -43,6 +46,20 @@ export default function CartPage({ cartPayload }: CartPageProps) {
     }
     checkCorrectUserCart();
   }, []);
+
+  React.useEffect(() => {
+    //update tổng số lượng
+    let totalProductCart = 0;
+    for (let i = 0; i < cartPayload?.cart_products?.length; i++) {
+      let prod = cartPayload?.cart_products[i];
+
+      prod.price
+        ? (totalProductCart += Number(prod.price) * Number(prod.quantity))
+        : (totalProductCart += 0);
+    }
+
+    setTotalCartProduct(totalProductCart);
+  });
   return (
     <MainLayout>
       {isCorrectCart ? (
@@ -75,21 +92,30 @@ export default function CartPage({ cartPayload }: CartPageProps) {
                 </Typography>
               </Col>
             </Row>
-            {cartPayload && cartPayload.cart_products ? (
-              cartPayload.cart_products.map((foodProduct) => (
-                <CartItem
-                  productId={foodProduct.productId}
-                  productType={foodProduct.productType}
-                  key={foodProduct.productId}
-                  img={foodProduct.img}
-                  name={foodProduct.name || ""}
-                  price={foodProduct.price || 0}
-                  quantity={foodProduct.quantity}
-                  rating={4}
-                ></CartItem>
-              ))
+            {cartPayload && cartPayload.cart_products.length > 0 ? (
+              cartPayload.cart_products.map((foodProduct) => {
+                return (
+                  <CartItem
+                    cartUserId={
+                      typeof cartUserId.current === "string"
+                        ? cartUserId.current
+                        : "none"
+                    }
+                    productId={foodProduct.productId}
+                    productType={foodProduct.productType}
+                    key={foodProduct.productId}
+                    img={foodProduct.img}
+                    name={foodProduct.name || ""}
+                    price={foodProduct.price || 0}
+                    quantity={foodProduct.quantity}
+                    rating={4}
+                  ></CartItem>
+                );
+              })
             ) : (
-              <h4 style={{ textAlign: "center", marginTop: "10%" }}>
+              <h4
+                style={{ textAlign: "center", marginTop: "10%", opacity: 0.4 }}
+              >
                 Chưa có sản phẩm trong giỏ hàng
               </h4>
             )}
@@ -143,7 +169,7 @@ export default function CartPage({ cartPayload }: CartPageProps) {
                   <p
                     className={clsx(styles.priceSubtotal, styles.rightColBill)}
                   >
-                    120000
+                    {totalCartProduct || 0}
                   </p>
                 </Stack>
 
@@ -160,6 +186,20 @@ export default function CartPage({ cartPayload }: CartPageProps) {
                     0
                   </p>
                 </Stack>
+
+                <Stack
+                  justifyContent={"space-between"}
+                  flexDirection={"row"}
+                  alignItems={"center"}
+                  sx={{ opacity: 0.4 }}
+                >
+                  <p className={clsx(styles.subShipCharge, styles.leftColBill)}>
+                    Giảm giá
+                  </p>
+                  <p className={clsx(styles.shipCharge, styles.rightColBill)}>
+                    {discountPrice}
+                  </p>
+                </Stack>
               </Box>
 
               <Box>
@@ -171,10 +211,10 @@ export default function CartPage({ cartPayload }: CartPageProps) {
                   borderTop={"1px solid #ccc"}
                 >
                   <p className={clsx(styles.subTotalCart, styles.leftColBill)}>
-                    Total Amount
+                    Tổng tiền
                   </p>
                   <p className={clsx(styles.totalCart, styles.rightColBill)}>
-                    200000
+                    {totalCartProduct - discountPrice}
                   </p>
                 </Stack>
               </Box>

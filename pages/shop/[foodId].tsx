@@ -6,8 +6,8 @@ import {
   PlusOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { Carousel, Col, Rate, Row } from "antd";
+import { Alert, Box, Button, Snackbar, Stack, Typography } from "@mui/material";
+import { Carousel, Col, Rate, Row, Spin } from "antd";
 import { CarouselRef } from "antd/es/carousel";
 import { API, Amplify, Auth } from "aws-amplify";
 import clsx from "clsx";
@@ -40,21 +40,57 @@ export default function FoodDetail({ food, foodList }: FoodDetailProps) {
   const [foodRelativeList, setFoodRelativeList] = React.useState<FoodModel[]>(
     []
   );
+  const [isAddingProduct, setIsAddingProduct] = React.useState({
+    addToCart: false,
+  });
+  const [messageAuth, setMessageAuth] = React.useState({
+    isActive: false,
+    state: 1,
+    message: <span></span>,
+  });
   const viewMoreBtnRef = React.useRef<HTMLButtonElement>(null);
   const foodRelativeRef = React.useRef<CarouselRef>(null);
 
+  function handleCloseAlert() {
+    setMessageAuth((prev) => ({ ...prev, isActive: false }));
+  }
   async function handleAddToCart(product: productCart) {
     const user = await Auth.currentUserInfo();
     const userName = await user.username;
 
     const apiUpdateCart = `https://svkcor3qaj.execute-api.us-east-1.amazonaws.com/v1/carts`;
 
+    setIsAddingProduct((prev) => ({ ...prev, addToCart: true }));
+    setMessageAuth((prev) => ({
+      ...prev,
+      isActive: true,
+      state: 1,
+      message: (
+        <span>
+          <Spin></Spin>{" "}
+          <span style={{ paddingLeft: "0.5rem", color: "#333" }}>
+            Đang thêm món ăn vào giỏ hàng
+          </span>
+        </span>
+      ),
+    }));
     const res = await updateProductCart({
       apiUrl: apiUpdateCart,
       cartUserId: userName,
       product,
     });
-    console.log("UPDATED PROD::: ", res);
+
+    setMessageAuth((prev) => ({
+      ...prev,
+      isActive: true,
+      state: 2,
+      message: (
+        <span>
+          <span>Thêm món ăn thành công</span>
+        </span>
+      ),
+    }));
+    setIsAddingProduct((prev) => ({ ...prev, addToCart: false }));
   }
   React.useEffect(() => {
     const handleWindowResize = () => {
@@ -100,6 +136,25 @@ export default function FoodDetail({ food, foodList }: FoodDetailProps) {
   }
   return (
     <MainLayout>
+      <Snackbar
+        open={messageAuth.isActive}
+        autoHideDuration={3000}
+        onClose={handleCloseAlert}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity={
+            messageAuth.state === 0
+              ? "error"
+              : messageAuth.state === 1
+              ? "info"
+              : "success"
+          }
+          sx={{ width: "100%" }}
+        >
+          {messageAuth.message}
+        </Alert>
+      </Snackbar>
       <Box px={{ sm: "10%", xs: "1rem" }} pt={{ xs: "4rem" }} pb={"3rem"}>
         <Stack
           direction={{ md: "row", xs: "column" }}
@@ -242,7 +297,7 @@ export default function FoodDetail({ food, foodList }: FoodDetailProps) {
                   handleAddToCart({
                     productId: food.food_id,
                     productType: food.food_type,
-                    quantity: 1,
+                    quantity: quantity,
                     old_quantity: 0,
                     img: food.food_img,
                     name: food.food_name,
@@ -260,6 +315,7 @@ export default function FoodDetail({ food, foodList }: FoodDetailProps) {
                   },
                 }}
                 startIcon={<ShoppingCartOutlined></ShoppingCartOutlined>}
+                disabled={isAddingProduct.addToCart}
               >
                 Add to cart
               </Button>
