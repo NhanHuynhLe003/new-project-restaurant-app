@@ -1,11 +1,14 @@
 import { discountModel } from "./discount";
 
 export interface productCart {
-  discounts?: discountModel[];
   productId: string;
-  name: string;
-  price: number;
+  productType: string;
   quantity: number;
+  old_quantity?: number;
+  rating?: number;
+  img?: string;
+  name?: string;
+  price?: number;
 }
 
 export interface cartModel {

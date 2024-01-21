@@ -1,18 +1,3 @@
-import { API, Amplify } from "aws-amplify";
-import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from "next";
-import * as React from "react";
-import { useRouter } from "next/router";
-import { FoodModel } from "../../models";
-import amplifyConfig from "../../amplifyconfig.json";
-import { handleConvertObjectDdb } from "../../utils/handleResDataDynamodb";
-import { Box, Button, Stack, Typography } from "@mui/material";
-import Image from "next/image";
-import { MainLayout } from "../../components/layouts/main";
-import { Rate, Divider, InputNumber, Row, Col, Carousel } from "antd";
-import avatarUser from "../../assets/images/avt-user.jpg";
-import food001 from "../../assets/images/food_img02.jpg";
-import styles from "../../styles/shop/foodDetail.module.css";
-import listUserComment from "../../jsons/usercomments.json";
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
@@ -21,9 +6,25 @@ import {
   PlusOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
-import clsx from "clsx";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import { Carousel, Col, Rate, Row } from "antd";
 import { CarouselRef } from "antd/es/carousel";
+import { API, Amplify, Auth } from "aws-amplify";
+import clsx from "clsx";
+import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from "next";
+import Image from "next/image";
+import * as React from "react";
+import amplifyConfig from "../../amplifyconfig.json";
+import avatarUser from "../../assets/images/avt-user.jpg";
+import food001 from "../../assets/images/food_img02.jpg";
+import { MainLayout } from "../../components/layouts/main";
 import FoodItem from "../../components/shop/foodItem";
+import listUserComment from "../../jsons/usercomments.json";
+import { FoodModel } from "../../models";
+import { productCart } from "../../models/cart";
+import styles from "../../styles/shop/foodDetail.module.css";
+import { updateProductCart } from "../../utils";
+import { handleConvertObjectDdb } from "../../utils/handleResDataDynamodb";
 
 export interface FoodDetailProps {
   food: FoodModel;
@@ -41,6 +42,20 @@ export default function FoodDetail({ food, foodList }: FoodDetailProps) {
   );
   const viewMoreBtnRef = React.useRef<HTMLButtonElement>(null);
   const foodRelativeRef = React.useRef<CarouselRef>(null);
+
+  async function handleAddToCart(product: productCart) {
+    const user = await Auth.currentUserInfo();
+    const userName = await user.username;
+
+    const apiUpdateCart = `https://svkcor3qaj.execute-api.us-east-1.amazonaws.com/v1/carts`;
+
+    const res = await updateProductCart({
+      apiUrl: apiUpdateCart,
+      cartUserId: userName,
+      product,
+    });
+    console.log("UPDATED PROD::: ", res);
+  }
   React.useEffect(() => {
     const handleWindowResize = () => {
       setWidthWindow(window.innerWidth);
@@ -223,6 +238,18 @@ export default function FoodDetail({ food, foodList }: FoodDetailProps) {
                 </Button>
               </Stack>
               <Button
+                onClick={() =>
+                  handleAddToCart({
+                    productId: food.food_id,
+                    productType: food.food_type,
+                    quantity: 1,
+                    old_quantity: 0,
+                    img: food.food_img,
+                    name: food.food_name,
+                    price: food.food_price,
+                    rating: food.food_rating,
+                  })
+                }
                 sx={{
                   bgcolor: "var(--primary-color)",
                   color: "#fff",

@@ -1,20 +1,21 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Row, Col, Menu, Drawer, Button, message, Input } from "antd";
 import {
-  ShoppingCartOutlined,
-  UserOutlined,
   MenuOutlined,
   SearchOutlined,
+  ShoppingCartOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
+import { Button, Col, Drawer, Input, Menu, Row } from "antd";
+import React, { useEffect, useState } from "react";
 
-import { navRoute } from "./routes-nav";
-import { Amplify, Auth } from "aws-amplify";
-import amplifyConfig from "../../../amplifyconfig.json";
-import Link from "next/link";
-import styles from "../../../styles/header/navbar.module.css";
 import { Alert, Box, CircularProgress, Snackbar, Stack } from "@mui/material";
+import { Amplify, Auth } from "aws-amplify";
+import Link from "next/link";
+import amplifyConfig from "../../../amplifyconfig.json";
+import styles from "../../../styles/header/navbar.module.css";
+import { navRoute } from "./routes-nav";
 
 import { useRouter } from "next/router";
+import { useAuth } from "../../../contexts/AuthContext";
 
 Amplify.configure(amplifyConfig);
 
@@ -23,20 +24,24 @@ const API_KEY = "dgt6PuOZHY1Ot9ZXtbN0x1ZpZyRcilJY2phtxcnB";
 
 const { Search } = Input;
 export default function NavBar() {
+  const { isAuthenticated, checkUser, isAdminAuth } = useAuth();
+  React.useEffect(() => {
+    checkUser();
+  }, []);
   const router = useRouter();
 
-  const [isLogin, setIsLogin] = useState(false);
   const [visibleDrawer, setVisibleDrawer] = useState(false);
-  const [openAlert, setOpenAlert] = React.useState(false);
+
   const [messageAuth, setMessageAuth] = useState({
-    state: true,
+    isActive: false,
+    state: 1,
     message: "Login Success",
   });
   const [isLoading, setLoading] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [curLinkActive, setCurLinkActive] = useState("");
-  const [logAdmin, setLogAdmin] = useState(false);
+
   useEffect(() => {
     const handleStart = () => {
       setLoading(true);
@@ -56,59 +61,64 @@ export default function NavBar() {
     };
   }, [router.events]);
 
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenAlert(false);
-  };
-
+  function handleCloseAlert() {
+    setMessageAuth((prev) => ({ ...prev, isActive: false }));
+  }
   async function handleAuthClick() {
-    if (isLogin) {
+    if (isAuthenticated) {
       try {
         setLogoutLoading(true);
         await Auth.signOut();
+        checkUser();
+
         setLogoutLoading(false);
-        setMessageAuth({ message: "Logout Success", state: true });
-        setOpenAlert(true);
-        setIsLogin(false);
+        setMessageAuth((prev) => ({
+          ...prev,
+          state: 2,
+          message: "Đăng xuất thành công",
+          isActive: true,
+        }));
+        //refresh page
+        router.push("/");
       } catch (error) {
-        setMessageAuth({ message: "Failed to logout", state: false });
+        await Auth.signOut();
+
+        setMessageAuth((prev) => ({
+          ...prev,
+          state: 0,
+          message: "Đăng xuất không thành công, vui long thử lại ",
+          isActive: true,
+        }));
       }
       return;
     }
+    // await Auth.signOut();
 
     router.push("/login");
   }
 
-  React.useEffect(() => {
-    async function checkAuthen() {
-      try {
-        const user = await Auth.currentSession();
-        const role = await user?.getAccessToken()?.payload["cognito:groups"];
-
-        if (role) {
-          setLogAdmin(true);
-        }
-
-        if (user) {
-          setIsLogin(true);
-        }
-      } catch (err) {
-        setIsLogin(false);
-        setLogAdmin(false);
-      }
-    }
-    checkAuthen();
-  }, []);
-
   const RouteMap = navRoute.filter((route) =>
-    isLogin ? (logAdmin ? route : !route.isAdmin) : !route.requiredLogin
+    isAuthenticated
+      ? isAdminAuth
+        ? route
+        : !route.isAdmin
+      : !route.requiredLogin
   );
+
+  const handleCartUser = async () => {
+    try {
+      const user = await Auth.currentUserInfo();
+      const linkToCartUserLogined = `/cart/${user.username}`;
+      router.push(linkToCartUserLogined);
+    } catch (err) {
+      setMessageAuth((prev) => ({
+        ...prev,
+        state: 1,
+        message: "Vui lòng đăng nhập để xem giỏ hàng",
+        isActive: true,
+      }));
+    }
+  };
 
   const handleDrawerOpen = () => {
     setVisibleDrawer(true);
@@ -120,10 +130,20 @@ export default function NavBar() {
 
   return (
     <nav className={styles.NavBar}>
-      <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar
+        open={messageAuth.isActive}
+        autoHideDuration={3000}
+        onClose={handleCloseAlert}
+      >
         <Alert
-          onClose={handleClose}
-          severity={messageAuth.state ? "success" : "error"}
+          onClose={handleCloseAlert}
+          severity={
+            messageAuth.state === 0
+              ? "error"
+              : messageAuth.state === 1
+              ? "info"
+              : "success"
+          }
           sx={{ width: "100%" }}
         >
           {messageAuth.message}
@@ -227,7 +247,11 @@ export default function NavBar() {
                 </Button>
               </Box>
               <Box component={"li"} title="go to shopping cart">
-                <Button type="text" style={{ color: "#fff" }}>
+                <Button
+                  onClick={handleCartUser}
+                  type="text"
+                  style={{ color: "#fff" }}
+                >
                   <ShoppingCartOutlined />
                 </Button>
               </Box>
@@ -237,7 +261,7 @@ export default function NavBar() {
                   type="text"
                   style={{ color: "#fff", fontWeight: "bold" }}
                 >
-                  {isLogin ? "Logout" : "Login"}{" "}
+                  {isAuthenticated ? "Logout" : "Login"}{" "}
                   {logoutLoading ? (
                     <CircularProgress
                       style={{

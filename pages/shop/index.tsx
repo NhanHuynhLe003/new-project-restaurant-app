@@ -1,33 +1,30 @@
-import * as React from "react";
 import {
-  Row,
-  Col,
-  Select,
-  Pagination,
   Card,
-  Input,
-  Typography,
   Checkbox,
+  Col,
+  Input,
+  Pagination,
   Progress,
+  Row,
+  Typography,
 } from "antd";
+import * as React from "react";
 
-import foodTags from "../../jsons/tagsV2.json";
+import styles from "../../styles/menu/menu.module.css";
 export interface MenuPageProps {
   foodListData: FoodModel[];
 }
-import styles from "../../styles/menu/menu.module.css";
 
-import amplifyConfig from "../../amplifyconfig.json";
+import { Divider } from "@mui/material";
 import { API, Amplify } from "aws-amplify";
 import clsx from "clsx";
+import { GetStaticProps, GetStaticPropsContext } from "next";
+import amplifyConfig from "../../amplifyconfig.json";
+import { MainLayout } from "../../components/layouts/main";
 import FoodItem from "../../components/shop/foodItem";
 import FoodLatestItem from "../../components/shop/foodLatestItem";
-import { GetStaticProps, GetStaticPropsContext } from "next";
-import { FoodModel, NextPageWithLayout } from "../../models";
+import { FoodModel } from "../../models";
 import { handleConvertObjectDdb } from "../../utils/handleResDataDynamodb";
-import Link from "next/link";
-import { MainLayout } from "../../components/layouts/main";
-import { Divider } from "@mui/material";
 
 const API_GW_NAME = "ag-manage-restaurant-project";
 Amplify.configure(amplifyConfig);
@@ -385,6 +382,6 @@ export const getStaticProps: GetStaticProps<MenuPageProps> = async (
     props: {
       foodListData: handleConvertObjectDdb(data),
     },
-    revalidate: 180,
+    revalidate: 30,
   };
 };

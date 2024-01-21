@@ -23,6 +23,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import SubmitDeleteAlert from "../../components/admin/submit-delete-alert";
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
+import { useAuth } from "../../contexts/AuthContext";
 
 const API_GW_NAME = "ag-manage-restaurant-project";
 Amplify.configure(amplifyConfig);
@@ -34,6 +35,7 @@ export interface FoodListProps {
 export interface AdminPageProps {}
 
 const AdminPage = ({ foodListData }: FoodListProps) => {
+  const { isAuthenticated, checkUser, isAdminAuth } = useAuth();
   const columns: ColumnsType<FoodModel> = [
     {
       title: "",
@@ -192,7 +194,11 @@ const AdminPage = ({ foodListData }: FoodListProps) => {
     state: false,
     element: "",
   });
-  const [isFailLogin, setIsFailLogin] = React.useState(false);
+
+  React.useEffect(() => {
+    console.log("ADMIN CHANGED::: ", isAdminAuth);
+  }, [isAdminAuth]);
+  const [onCloseAlert, setOnCloseAlert] = React.useState(!isAdminAuth);
 
   function handleDirectToUpdateProduct(food_id: string, food_type: string) {
     setLoading((prev) => ({ ...prev, element: "create-food" }));
@@ -230,127 +236,84 @@ const AdminPage = ({ foodListData }: FoodListProps) => {
     <MainLayout lightMode={true}>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={isFailLogin}
-        onClose={() => setIsFailLogin(false)}
+        open={onCloseAlert}
+        onClose={() => setOnCloseAlert(false)}
         autoHideDuration={4000}
       >
         <Alert
-          onClose={() => setIsFailLogin(false)}
+          onClose={() => setOnCloseAlert(false)}
           severity="error"
           sx={{ width: "100%" }}
         >
           Only Admin Can Access!
         </Alert>
       </Snackbar>
-      <Authenticator hideSignUp>
-        {({ signOut, user }) => {
-          if (
-            !user
-              ?.getSignInUserSession()
-              ?.getAccessToken()
-              ?.payload["cognito:groups"]?.includes("admin")
-          ) {
-            console.log("User must be admin");
-            try {
-              Auth.signOut().then(() => setIsFailLogin(true));
-              return (
-                <Typography
-                  component={"h2"}
-                  variant="h4"
-                  color={"orange"}
-                  fontWeight={"bold"}
-                  textAlign={"center"}
-                  textTransform={"uppercase"}
-                >
-                  Please login as admin
-                </Typography>
-              );
-            } catch (err) {
-              console.error(err);
-              return (
-                <Typography
-                  component={"h2"}
-                  variant="h4"
-                  color={"orange"}
-                  fontWeight={"bold"}
-                  textAlign={"center"}
-                  textTransform={"uppercase"}
-                >
-                  Failed to login, please try again!
-                </Typography>
-              );
-            }
-          }
-          return (
-            <Box>
-              <Stack
-                direction={"row"}
-                justifyContent={"flex-end"}
-                gap={"1rem"}
-                m={"2rem 0"}
-              >
-                <Button
-                  variant="contained"
-                  onClick={handleDirectCreateFood}
-                  startIcon={
-                    loading.element === "create-food" &&
-                    loading.state && (
-                      <ConfigProvider
-                        theme={{ token: { colorPrimary: "#ccc" } }}
-                      >
-                        <Spin></Spin>
-                      </ConfigProvider>
-                    )
-                  }
-                >
-                  Create Product
-                </Button>
-                <Button
-                  variant="contained"
-                  color="warning"
-                  onClick={handleDirectCreateDiscount}
-                  startIcon={
-                    loading.element === "create-discount" &&
-                    loading.state && (
-                      <ConfigProvider
-                        theme={{ token: { colorPrimary: "#ccc" } }}
-                      >
-                        <Spin></Spin>
-                      </ConfigProvider>
-                    )
-                  }
-                >
-                  Create Discount
-                </Button>
-              </Stack>
-              <ConfigProvider
-                theme={{
-                  components: {
-                    Pagination: {
-                      colorPrimary: "var(--primary-color)",
-                      colorBgBase: "#ccc",
-                    },
-                  },
-                }}
-              >
-                <Table
-                  pagination={{
-                    hideOnSinglePage: true,
-                    className: styles.paginateTable,
-                    style: { color: "red" },
-                  }}
-                  bordered
-                  style={{ textAlign: "center" }}
-                  columns={columns}
-                  dataSource={foodListData}
-                  scroll={{ x: 3200 }}
-                />
-              </ConfigProvider>
-              ;
-            </Box>
-          );
-        }}
-      </Authenticator>
+      {isAdminAuth ? (
+        <Box>
+          <Stack
+            direction={"row"}
+            justifyContent={"flex-end"}
+            gap={"1rem"}
+            m={"2rem 0"}
+          >
+            <Button
+              variant="contained"
+              onClick={handleDirectCreateFood}
+              startIcon={
+                loading.element === "create-food" &&
+                loading.state && (
+                  <ConfigProvider theme={{ token: { colorPrimary: "#ccc" } }}>
+                    <Spin></Spin>
+                  </ConfigProvider>
+                )
+              }
+            >
+              Create Product
+            </Button>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={handleDirectCreateDiscount}
+              startIcon={
+                loading.element === "create-discount" &&
+                loading.state && (
+                  <ConfigProvider theme={{ token: { colorPrimary: "#ccc" } }}>
+                    <Spin></Spin>
+                  </ConfigProvider>
+                )
+              }
+            >
+              Create Discount
+            </Button>
+          </Stack>
+          <ConfigProvider
+            theme={{
+              components: {
+                Pagination: {
+                  colorPrimary: "var(--primary-color)",
+                  colorBgBase: "#ccc",
+                },
+              },
+            }}
+          >
+            <Table
+              pagination={{
+                hideOnSinglePage: true,
+                className: styles.paginateTable,
+                style: { color: "red" },
+              }}
+              bordered
+              style={{ textAlign: "center" }}
+              columns={columns}
+              dataSource={foodListData}
+              scroll={{ x: 3200 }}
+            />
+          </ConfigProvider>
+          ;
+        </Box>
+      ) : (
+        <h3 style={{ color: "#fff", textAlign: "center" }}>Access Denied</h3>
+      )}
     </MainLayout>
   );
 };

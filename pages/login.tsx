@@ -6,6 +6,7 @@ import amplifyConfig from "../amplifyconfig.json";
 import { FoodModel } from "../models";
 import { useRouter } from "next/router";
 import { Box, Button, Stack, Typography } from "@mui/material";
+import { useAuth } from "../contexts/AuthContext";
 
 const { v4: uuidv4 } = require("uuid");
 
@@ -18,6 +19,7 @@ export interface LoginProps {}
 
 export default function Login(props: LoginProps) {
   const router = useRouter();
+  const { isAuthenticated, checkUser, isAdminAuth } = useAuth();
   const numRef = React.useRef(10);
   const [userLogin, setUser] = React.useState<any>();
   const [countDown, setCountDown] = React.useState(10);

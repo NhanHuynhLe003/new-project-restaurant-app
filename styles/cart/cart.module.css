@@ -1,0 +1,73 @@
+.applyBtn {
+
+    border: none;
+    color: #fff;
+    background-color: var(--primary-color);
+    border-radius: 0 4px 4px 0;
+    font-weight: 600;
+    padding: 0.75rem;
+    cursor: pointer;
+}
+
+.applyBtn:hover {
+    opacity: 0.8;
+}
+
+
+
+.inputContainerCoupon input {
+    padding: 0.5rem;
+}
+
+
+.leftColBill {
+    width: 80%;
+    margin: 0.25rem 0;
+    font-size: 20px;
+}
+
+.rightColBill {
+    font-size: 18px;
+    margin: 0.25rem 0;
+    text-align: right;
+    width: 20%;
+}
+
+.rightColBill::after {
+    content: '₫';
+}
+
+.subtotal {
+    font-weight: 600;
+}
+
+.priceSubtotal {
+    font-weight: 600;
+}
+
+
+
+.subTotalCart {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.totalCart {
+    font-weight: bold;
+    font-size: 20px;
+
+}
+
+.checkoutBtn {
+    width: 100%;
+    padding: 1rem;
+    color: #fff;
+    background-color: var(--primary-color);
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    bottom: -5rem;
+
+}
