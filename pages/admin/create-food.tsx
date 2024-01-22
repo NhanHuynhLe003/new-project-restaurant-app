@@ -360,7 +360,10 @@ const CreateFoodPage: NextPageWithLayout = (props: CreateFoodPageProps) => {
         </Box>
       ) : (
         <Box textAlign={"center"}>
-          <h3 style={{ color: "#000", textAlign: "center" }}>Access Denied</h3>
+          <h3 style={{ color: "#000", textAlign: "center" }}>
+            {" "}
+            Access Denied{" "}
+          </h3>
         </Box>
       )}
     </MainLayout>
