@@ -92,7 +92,9 @@ export default function CartPage({ cartPayload }: CartPageProps) {
                 </Typography>
               </Col>
             </Row>
-            {cartPayload && cartPayload.cart_products.length > 0 ? (
+            {cartPayload &&
+            cartPayload.cart_products &&
+            cartPayload.cart_products.length > 0 ? (
               cartPayload.cart_products.map((foodProduct) => {
                 return (
                   <CartItem
