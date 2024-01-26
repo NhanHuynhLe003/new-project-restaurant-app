@@ -9,6 +9,7 @@ export interface productCart {
   img?: string;
   name?: string;
   price?: number;
+  discounts?: discountModel[];
 }
 
 export interface cartModel {

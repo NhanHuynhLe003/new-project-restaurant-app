@@ -93,6 +93,7 @@ export default function FoodItem({
                 productId: props.food_id,
                 productType: props.food_type,
                 quantity: 1,
+                discounts: [],
               })
             }
           >

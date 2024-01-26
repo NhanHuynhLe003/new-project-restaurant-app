@@ -3,4 +3,5 @@ export interface discountModel {
   name: string;
   code: string;
   value: string;
+  applyFor: string; // "all" / "specific"
 }

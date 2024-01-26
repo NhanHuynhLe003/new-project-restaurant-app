@@ -316,6 +316,7 @@ export default function FoodDetail({ food, foodList }: FoodDetailProps) {
                     name: food.food_name,
                     price: food.food_price,
                     rating: food.food_rating,
+                    discounts: [],
                   })
                 }
                 sx={{
