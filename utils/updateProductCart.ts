@@ -13,7 +13,7 @@ const updateProductCart = async ({
       cart_userId: cartUserId,
       cart_cartId: cartId,
       cart_state: "active",
-      product: product,
+      product: { ...product, discounts: [] },
     },
   });
 

@@ -1,0 +1,15 @@
+    .deleteButton {
+        background-color: var(--primary-color);
+        color: #fff;
+        border: none;
+        padding: 0.2rem 0.4rem;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 200ms ease-in-out;
+    }
+
+
+    .deleteButton:focus-within {
+        color: var(--primary-color);
+        background-color: #fff;
+    }

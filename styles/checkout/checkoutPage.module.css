@@ -1,0 +1,11 @@
+.leftCheckout {
+    width: 72%;
+}
+
+.rightCheckout {
+    width: 25%;
+    padding: 1rem;
+    height: fit-content;
+}
+
+.cartItemContainer {}

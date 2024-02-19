@@ -1,38 +1,155 @@
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import { Box, Stack, Typography } from "@mui/material";
-import { Col, Input, Row } from "antd";
+import { Alert, Box, Snackbar, Stack, Typography } from "@mui/material";
+import { Col, Input, Row, Spin } from "antd";
 import { SearchProps } from "antd/es/input";
 import { API, Amplify, Auth } from "aws-amplify";
 import clsx from "clsx";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import * as React from "react";
 import amplifyConfig from "../../amplifyconfig.json";
 import CartItem from "../../components/cart/cart-item";
 import { MainLayout } from "../../components/layouts/main";
 import { cartModel } from "../../models/cart";
 import styles from "../../styles/cart/cart.module.css";
+import DiscountItemApply from "../../components/cart/discount-item-apply";
 const { v4: uuidv4 } = require("uuid");
 
 const API_GW_NAME = "ag-manage-restaurant-project";
 Amplify.configure(amplifyConfig);
 
 const { Search } = Input;
-const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
-  console.log(value);
+
 export interface CartPageProps {
   cartPayload: cartModel;
+  totalPriceCalculated: {
+    totalPrice: number;
+    totalDiscount: number;
+    feeShip: number;
+    totalCheckout: number;
+  };
 }
 
-export default function CartPage({ cartPayload }: CartPageProps) {
-  const router = useRouter();
-  const cartUserId = React.useRef(router.query?.cartUserId);
-  const [isCorrectCart, setIsCorrectCart] = React.useState(false);
-  const [totalCartProduct, setTotalCartProduct] = React.useState(0);
-  const [discountPrice, setDiscountPrice] = React.useState(0);
+export type messageAuthType = {
+  isActive: boolean;
+  state: number;
+  autoHideTime: null | number;
+  message: React.ReactNode;
+};
 
-  React.useLayoutEffect(() => {
+export default function CartPage({
+  cartPayload,
+  totalPriceCalculated,
+}: CartPageProps) {
+  const router = useRouter();
+  // useRef nên có kiểu trả về để biêt kiểu dữ liệu
+  const applyInputRef = React.useRef<any>(null);
+  const cartUserId = React.useRef(router.query?.cartUserId);
+  const [valueApplyInput, setValueApplyInput] = React.useState("");
+  const [isCorrectCart, setIsCorrectCart] = React.useState(false);
+
+  const [messageAuth, setMessageAuth] = React.useState<messageAuthType>({
+    isActive: false,
+    state: 2,
+    autoHideTime: null,
+    message: <span></span>,
+  });
+
+  const onApplyDiscount = async (data: {
+    codeValue: string;
+    cartUserId: any;
+
+    event?: React.MouseEvent<HTMLButtonElement, MouseEvent>;
+  }) => {
+    try {
+      const bodyHeader = {
+        cart_userId: data.cartUserId, //user so huu cart, co the dung userId khi login
+        cart_cartId: "cart_001", //tao ngau nhien
+        cart_state: "active", //['active', 'completed', 'failed', 'pending']
+        discount_id: data?.codeValue.trim(),
+        discount_code: data?.codeValue.trim(),
+      };
+
+      setMessageAuth((prev) => ({
+        ...prev,
+        state: 1,
+        autoHideTime: null,
+        message: (
+          <span>
+            <Spin></Spin>{" "}
+            <span
+              style={{
+                paddingLeft: "1rem",
+                color: "#808080",
+              }}
+            >
+              Đang kiểm tra vouncher
+            </span>
+          </span>
+        ),
+        isActive: true,
+      }));
+
+      // console.log("CODE::::", data.codeValue);
+      await API.post(API_GW_NAME, "/carts/discount", {
+        body: bodyHeader,
+      }).then((_) => router.push(`/cart/${data.cartUserId}`));
+
+      //clear input after called api
+      setValueApplyInput("");
+      setMessageAuth((prev) => ({
+        ...prev,
+        state: 2,
+        autoHideTime: 1500,
+        message: (
+          <span>
+            <span
+              style={{
+                paddingLeft: "1rem",
+                color: "#808080",
+              }}
+            >
+              Áp dụng vouncher thành công
+            </span>
+          </span>
+        ),
+        isActive: true,
+      }));
+    } catch (err) {
+      setMessageAuth((prev) => ({
+        ...prev,
+        state: 0,
+        autoHideTime: 2500,
+        message: (
+          <span>
+            <span
+              style={{
+                paddingLeft: "1rem",
+                color: "#808080",
+              }}
+            >
+              Áp dụng vouncher không thành công
+            </span>
+          </span>
+        ),
+        isActive: true,
+      }));
+      console.error(err);
+    }
+  };
+
+  function handleCloseAlert() {
+    setMessageAuth((prev) => ({ ...prev, isActive: false }));
+  }
+
+  const handleClickCheckoutBtn = () => {
+    // lay ra cartUserId tu url
+    const cartUserIdPath = router.asPath.split("/")[2];
+
+    router.push(`/checkout/${cartUserIdPath}`);
+  };
+  React.useEffect(() => {
     async function checkCorrectUserCart() {
       try {
         const user = await Auth.currentUserInfo();
@@ -47,51 +164,30 @@ export default function CartPage({ cartPayload }: CartPageProps) {
     checkCorrectUserCart();
   }, []);
 
-  React.useEffect(() => {
-    //update tổng số lượng
-    let totalProductCart = 0;
-    for (let i = 0; i < cartPayload?.cart_products?.length; i++) {
-      let prod = cartPayload?.cart_products[i];
-
-      prod.price
-        ? (totalProductCart += Number(prod.price) * Number(prod.quantity))
-        : (totalProductCart += 0);
-    }
-
-    setTotalCartProduct(totalProductCart);
-  });
   return (
     <MainLayout>
+      <Snackbar
+        autoHideDuration={messageAuth.autoHideTime}
+        open={messageAuth.isActive}
+        onClose={handleCloseAlert}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity={
+            messageAuth.state === 0
+              ? "error"
+              : messageAuth.state === 1
+              ? "info"
+              : "success"
+          }
+          sx={{ width: "100%" }}
+        >
+          {messageAuth.message}
+        </Alert>
+      </Snackbar>
       {isCorrectCart ? (
         <Box sx={{ mb: "10rem" }}>
           <Box>
-            <Row>
-              <Col sm={{ span: 8 }} xs={{ span: 0 }}>
-                <Typography variant="h5" component={"h2"} fontWeight={"600"}>
-                  Product
-                </Typography>
-              </Col>
-              <Col sm={{ span: 4 }} xs={{ span: 0 }}>
-                <Typography variant="h5" component={"h2"} fontWeight={"600"}>
-                  Price
-                </Typography>
-              </Col>
-              <Col sm={{ span: 4 }} xs={{ span: 0 }}>
-                <Typography variant="h5" component={"h2"} fontWeight={"600"}>
-                  Quantity
-                </Typography>
-              </Col>
-              <Col sm={{ span: 4 }} xs={{ span: 0 }}>
-                <Typography variant="h5" component={"h2"} fontWeight={"600"}>
-                  Total
-                </Typography>
-              </Col>
-              <Col sm={{ span: 4 }} xs={{ span: 0 }}>
-                <Typography variant="h5" component={"h2"} fontWeight={"600"}>
-                  Remove
-                </Typography>
-              </Col>
-            </Row>
             {cartPayload &&
             cartPayload.cart_products &&
             cartPayload.cart_products.length > 0 ? (
@@ -150,12 +246,39 @@ export default function CartPage({ cartPayload }: CartPageProps) {
               </Box>
               <Search
                 className={styles.inputContainerCoupon}
-                placeholder="Nhập mã tại đây"
-                onSearch={onSearch}
+                placeholder="Nhập mã tại đây, ví dụ: HAPPYNEWYEAR2024 hoặc LIXI2024"
+                onSearch={(val: string) => {
+                  setValueApplyInput(val);
+                  onApplyDiscount &&
+                    onApplyDiscount({
+                      codeValue: val,
+                      cartUserId: cartUserId.current ?? "",
+                    });
+                }}
+                onChange={(e) => setValueApplyInput(e.target.value)}
+                value={valueApplyInput}
                 enterButton={
                   <button className={styles.applyBtn}>Áp Dụng</button>
                 }
               />
+              <Box className={styles.discountCartContainer}>
+                {cartPayload.cart_discounts &&
+                  cartPayload.cart_discounts.map((discount, index) => {
+                    return (
+                      <DiscountItemApply
+                        discountValue={
+                          discount.discount_type === "percentage"
+                            ? discount.discount_value + "%"
+                            : discount.discount_value + "₫"
+                        }
+                        key={discount.discount_code}
+                        cartUserId={cartPayload.cart_userId}
+                        discountCode={discount.discount_code}
+                        discountName={discount.discount_code}
+                      ></DiscountItemApply>
+                    );
+                  })}
+              </Box>
             </Stack>
             <Stack
               sx={{
@@ -183,7 +306,7 @@ export default function CartPage({ cartPayload }: CartPageProps) {
                   <p
                     className={clsx(styles.priceSubtotal, styles.rightColBill)}
                   >
-                    {totalCartProduct || 0}
+                    {totalPriceCalculated.totalPrice || 0}
                   </p>
                 </Stack>
 
@@ -197,7 +320,7 @@ export default function CartPage({ cartPayload }: CartPageProps) {
                     Phí giao hàng
                   </p>
                   <p className={clsx(styles.shipCharge, styles.rightColBill)}>
-                    0
+                    {totalPriceCalculated.feeShip}
                   </p>
                 </Stack>
 
@@ -211,7 +334,7 @@ export default function CartPage({ cartPayload }: CartPageProps) {
                     Giảm giá
                   </p>
                   <p className={clsx(styles.shipCharge, styles.rightColBill)}>
-                    {discountPrice}
+                    {totalPriceCalculated.totalDiscount}
                   </p>
                 </Stack>
               </Box>
@@ -228,12 +351,17 @@ export default function CartPage({ cartPayload }: CartPageProps) {
                     Tổng tiền
                   </p>
                   <p className={clsx(styles.totalCart, styles.rightColBill)}>
-                    {totalCartProduct - discountPrice}
+                    {totalPriceCalculated.totalCheckout}
                   </p>
                 </Stack>
               </Box>
 
-              <button className={styles.checkoutBtn}>Kiểm tra đơn hàng</button>
+              <button
+                onClick={handleClickCheckoutBtn}
+                className={styles.checkoutBtn}
+              >
+                Kiểm tra đơn hàng
+              </button>
             </Stack>
           </Stack>
         </Box>
@@ -265,6 +393,12 @@ export const getServerSideProps: GetServerSideProps<CartPageProps> = async (
     cart_state: "",
     cart_userId: "",
   };
+  let totalPriceCalculated = {
+    totalPrice: 0,
+    totalDiscount: 0,
+    feeShip: 0,
+    totalCheckout: 0,
+  };
 
   try {
     const dataCart = await API.get(
@@ -295,6 +429,16 @@ export const getServerSideProps: GetServerSideProps<CartPageProps> = async (
 
       // console.log("dataResponse::: ", dataResponse);
     }
+
+    // tiền tạm tính
+    const bodyReqCheckout = { ...dataResponse };
+    // console.log("BODY REQ: ", bodyReqCheckout);
+    const checkoutResponse = await API.get(API_GW_NAME, "/checkouts", {
+      body: bodyReqCheckout,
+    });
+    const payloadConverted = JSON.parse(checkoutResponse.payload.body);
+
+    totalPriceCalculated = payloadConverted.payload;
   } catch (err) {
     console.error(err);
   }
@@ -302,6 +446,7 @@ export const getServerSideProps: GetServerSideProps<CartPageProps> = async (
   return {
     props: {
       cartPayload: dataResponse,
+      totalPriceCalculated,
     },
   };
 };

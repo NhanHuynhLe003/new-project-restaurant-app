@@ -1,7 +1,9 @@
 export interface discountModel {
-  type: string;
-  name: string;
-  code: string;
-  value: string;
-  applyFor: string; // "all" / "specific"
+  discount_id?: string;
+  discount_type: string;
+  discount_name: string;
+  discount_value: string;
+  discount_applies_for: string;
+
+  discount_code: string;
 }

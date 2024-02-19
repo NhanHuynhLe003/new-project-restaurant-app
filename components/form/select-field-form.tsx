@@ -29,9 +29,13 @@ export default function SelectFieldForm({
     name,
     control,
   });
+
   return (
     <Select
+      // label="Age"
+      renderValue={() => value || label}
       defaultValue={options[0]}
+      displayEmpty
       value={value}
       ref={ref}
       name={name}

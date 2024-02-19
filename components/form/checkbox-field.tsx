@@ -4,9 +4,12 @@ import { Control, useController } from "react-hook-form";
 export type CheckBoxFieldProps = CheckboxProps & {
   name: string;
   control: Control<any>;
+
+  children: React.ReactNode;
 };
 
 export default function CheckBoxField({
+  children,
   name,
   control,
   //Tuyền các hàm bên dưới nhằm chặn user sửa props bên ngoài InputField
@@ -24,12 +27,16 @@ export default function CheckBoxField({
     control,
   });
   return (
-    <Checkbox
-      name={name}
-      value={value}
-      ref={ref}
-      onChange={onChange}
-      {...rest}
-    ></Checkbox>
+    <label style={{ cursor: "pointer" }} htmlFor={"checkbox-" + name}>
+      <Checkbox
+        id={"checkbox-" + name}
+        name={name}
+        checked={Boolean(value)}
+        ref={ref}
+        onChange={onChange}
+        {...rest}
+      ></Checkbox>
+      {children}
+    </label>
   );
 }

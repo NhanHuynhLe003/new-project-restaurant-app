@@ -7,6 +7,7 @@ import * as React from "react";
 import { productCart } from "../../../models/cart";
 import styles from "../../../styles/cart/cart-item.module.css";
 import clsx from "clsx";
+
 const API_GW_NAME = "ag-manage-restaurant-project";
 const API_KEY = "dgt6PuOZHY1Ot9ZXtbN0x1ZpZyRcilJY2phtxcnB";
 
@@ -29,6 +30,7 @@ export default function CartItem({
 
   const [messageAuth, setMessageAuth] = React.useState({
     isActive: false,
+    autoHideTime: 10000,
     state: 2,
     message: <span></span>,
   });
@@ -39,7 +41,7 @@ export default function CartItem({
   }
 
   function handleDesQuan() {
-    setProdQuan(prodQuan - 1);
+    prodQuan > 1 ? setProdQuan(prodQuan - 1) : setProdQuan(1);
   }
   function handleCloseAlert() {
     setMessageAuth((prev) => ({ ...prev, isActive: false }));
@@ -60,6 +62,7 @@ export default function CartItem({
       setMessageAuth((prev) => ({
         ...prev,
         state: 1,
+        autoHideTime: 10000,
         message: (
           <span>
             <Spin></Spin>{" "}
@@ -67,24 +70,19 @@ export default function CartItem({
               style={{
                 paddingLeft: "1rem",
                 color: "#808080",
-                fontWeight: "bold",
               }}
             >
-              Removing Product
+              Đang xóa sản phẩm
             </span>
           </span>
         ),
         isActive: true,
       }));
-      const response = await API.del(API_GW_NAME, "/carts/product", options);
-      // dùng useRouter để tiến hành cập nhật dữ liệu
-      router.push(`/cart/${cartUserId}`);
-      setMessageAuth((prev) => ({
-        ...prev,
-        state: 2,
-        message: <span>Xóa sản phẩm thành công</span>,
-        isActive: true,
-      }));
+      const response = await API.del(
+        API_GW_NAME,
+        "/carts/product",
+        options
+      ).then(() => router.push(`/cart/${cartUserId}`));
     } catch (err) {
       console.error(err);
     }
@@ -94,7 +92,7 @@ export default function CartItem({
     <>
       <Snackbar
         open={messageAuth.isActive}
-        autoHideDuration={3000}
+        autoHideDuration={messageAuth.autoHideTime}
         onClose={handleCloseAlert}
       >
         <Alert
@@ -144,7 +142,7 @@ export default function CartItem({
           sm={{ span: 4 }}
           className={clsx(styles.centerCol, styles.hideCol)}
         >
-          <span>{price}đ</span>
+          <span style={{ fontSize: 16 }}>{price}đ</span>
         </Col>
         <Col sm={{ span: 4 }} xs={{ span: 8 }} className={styles.centerCol}>
           <Stack
@@ -168,6 +166,7 @@ export default function CartItem({
               -
             </button>
             <input
+              disabled
               type="text"
               placeholder="quantity?"
               value={prodQuan}
@@ -192,7 +191,7 @@ export default function CartItem({
         </Col>
         <Col
           sm={{ span: 4 }}
-          style={{ fontWeight: "bold" }}
+          style={{ fontWeight: "bold", fontSize: 16 }}
           className={styles.centerCol}
         >
           {Number(price) * Number(prodQuan)}đ

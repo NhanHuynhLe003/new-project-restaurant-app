@@ -17,4 +17,7 @@ export interface cartModel {
   cart_userId: string;
   cart_state: string;
   cart_products: productCart[];
+  cart_sub_total_price?: number;
+  cart_total_price?: number;
+  cart_discounts?: discountModel[];
 }

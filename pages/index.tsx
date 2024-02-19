@@ -32,6 +32,7 @@ import { CheckOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import MenuFoodCard from "../components/Home/menu-food-card";
 import FeedBack from "../components/Home/feedback";
+import Acheivement from "../components/Home/achivement";
 
 const tmpImgCateList = [
   {
@@ -112,6 +113,29 @@ const feedbacks = [
       "The food is beautifully decorated, very eye-catching. I will be back to support!",
     rating: 5,
     name: "Nguyen Thi Thanh",
+  },
+];
+
+const acheiveList = [
+  {
+    img: icChef,
+    title: "Professional Chefs",
+    content: "420",
+  },
+  {
+    img: icItemFood,
+    title: "Items Of Food",
+    content: "320",
+  },
+  {
+    img: icYearExp,
+    title: "Years Of Experienced",
+    content: "30+",
+  },
+  {
+    img: icPizza,
+    title: "Happy Customers",
+    content: "220",
   },
 ];
 const Home: NextPageWithLayout = () => {
@@ -469,75 +493,21 @@ And Experienced "
         <br />
         <br />
         <br />
-        <div className={styles.achievement}>
-          <div className={styles.blurAchievement}></div>
-          <Row className={styles.achieveContainer} gutter={[0, 24]}>
-            <Col
-              span={24}
-              sm={{ span: 12 }}
-              md={{ span: 6 }}
-              style={{ textAlign: "center" }}
-            >
-              <Image src={icChef} alt="icon_chef"></Image>
-              <Typography component={"h6"} color={"var(--white)"}>
-                Professional Chefs
-              </Typography>
-              <Typography component={"h5"} variant="h5" color={"var(--white)"}>
-                420
-              </Typography>
-            </Col>
-
-            <Col
-              span={24}
-              sm={{ span: 12 }}
-              md={{ span: 6 }}
-              style={{ textAlign: "center" }}
-            >
-              <Image src={icItemFood} alt="icon_food_item"></Image>
-              <Typography component={"h6"} color={"var(--white)"}>
-                Items Of Food
-              </Typography>
-              <Typography component={"h5"} variant="h5" color={"var(--white)"}>
-                320
-              </Typography>
-            </Col>
-
-            <Col
-              span={24}
-              sm={{ span: 12 }}
-              md={{ span: 6 }}
-              style={{ textAlign: "center" }}
-            >
-              <Image src={icYearExp} alt="ic_year_exp"></Image>
-              <Typography component={"h6"} color={"var(--white)"}>
-                Years Of Experienced
-              </Typography>
-              <Typography component={"h5"} variant="h5" color={"var(--white)"}>
-                30+
-              </Typography>
-            </Col>
-
-            <Col
-              span={24}
-              sm={{ span: 12 }}
-              md={{ span: 6 }}
-              style={{ textAlign: "center" }}
-            >
-              <Image src={icPizza} alt="ic_pizza"></Image>
-              <Typography component={"h6"} color={"var(--white)"}>
-                Happy Customers
-              </Typography>
-              <Typography component={"h5"} variant="h5" color={"var(--white)"}>
-                220
-              </Typography>
-            </Col>
-          </Row>
-        </div>
+        {/* Acheivement section */}
+        <Box position={"relative"}>
+          <Box
+            position={"absolute"}
+            left={"-10%"}
+            top={"0"}
+            right={"-10%"}
+            bottom={0}
+          >
+            <Acheivement iconList={acheiveList}></Acheivement>
+          </Box>
+        </Box>
       </Box>
-      <br />
-      <br />
-      <br />
-      <br />
+
+      <Box my={"30rem"}> </Box>
       <Box padding={{ xs: "2rem 1rem", sm: "2rem 0" }}>
         <Box>
           <Typography

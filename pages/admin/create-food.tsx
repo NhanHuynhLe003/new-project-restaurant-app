@@ -155,7 +155,7 @@ const CreateFoodPage: NextPageWithLayout = (props: CreateFoodPageProps) => {
         fileUpload?.name
       );
       const user = await Auth.currentSession(); // lay ra thong tin user
-      const role = await user.getAccessToken().payload["cognito:groups"];
+      // const role = await user.getAccessToken().payload["cognito:groups"];
 
       const idToken = await user.getIdToken().getJwtToken();
       const val = await getValues();
@@ -208,8 +208,6 @@ const CreateFoodPage: NextPageWithLayout = (props: CreateFoodPageProps) => {
           </Typography>
 
           <Card sx={{ width: "80%", mx: "auto", my: 4, p: 4 }}>
-            <Button onClick={() => console.log(getValues())}>TestValue</Button>
-            <br />
             <Box component={"form"} onSubmit={handleSubmit(handleSubmitForm)}>
               <InputField
                 name="name"
