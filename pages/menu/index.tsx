@@ -78,14 +78,24 @@ export default function MenuPage({ listData }: MenuPageProps) {
 export const getStaticProps: GetStaticProps<MenuPageProps> = async (
   context: GetStaticPropsContext
 ) => {
-  const response = await fetch(
-    "http://localhost:3000/api/menu/menu-section-list"
-  );
-  const data = await response.json();
-  console.log(data);
-  return {
-    props: {
-      listData: data,
-    },
-  };
+  try {
+    const apiUrl = process.env.API_URL || "http://localhost:3000";
+    const response = await fetch(`${apiUrl}/api/menu/menu-section-list`);
+    const data = await response.json();
+    console.log("DATA:::: ", data);
+    return {
+      props: {
+        listData: data,
+      },
+      revalidate: 300,
+    };
+  } catch (err) {
+    console.log("ERROR: ", err);
+    return {
+      props: {
+        listData: null,
+      },
+      revalidate: 300,
+    };
+  }
 };
