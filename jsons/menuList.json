@@ -1,0 +1,174 @@
+[
+  {
+    "imgSection": "menu-section/food-menu-section-01.jpg",
+    "isImgLeft": true,
+    "titleSection": "Delicious Foods",
+    "listMenu": [
+      {
+        "name": "Pizza",
+        "description": "Delicious pizza with fresh ingredients",
+        "price": 15,
+        "gredients": ["Cheese", "Tomato", "Basil"]
+      },
+      {
+        "name": "Burger",
+        "description": "Juicy burger with lettuce and tomato",
+        "price": 10,
+        "gredients": ["Beef", "Lettuce", "Tomato"]
+      },
+      {
+        "name": "Pasta",
+        "description": "Italian pasta with a rich tomato sauce",
+        "price": 12,
+        "gredients": ["Pasta", "Tomato Sauce"]
+      },
+      {
+        "name": "Salad",
+        "description": "Fresh salad with a variety of vegetables",
+        "price": 8,
+        "gredients": ["Lettuce", "Cucumber", "Tomato"]
+      },
+      {
+        "name": "Steak",
+        "description": "Grilled steak with a side of vegetables",
+        "price": 20,
+        "gredients": ["Steak", "Vegetables"]
+      },
+      {
+        "name": "Fish",
+        "description": "Grilled fish with a lemon butter sauce",
+        "price": 18,
+        "gredients": ["Fish", "Lemon", "Butter"]
+      }
+    ]
+  },
+  {
+    "imgSection": "menu-section/food-menu-section-02.jpg",
+    "isImgLeft": false,
+    "titleSection": "Delicious Foods",
+    "listMenu": [
+      {
+        "name": "Pizza",
+        "description": "Delicious pizza with fresh ingredients",
+        "price": 15,
+        "gredients": ["Cheese", "Tomato", "Basil"]
+      },
+      {
+        "name": "Burger",
+        "description": "Juicy burger with lettuce and tomato",
+        "price": 10,
+        "gredients": ["Beef", "Lettuce", "Tomato"]
+      },
+      {
+        "name": "Pasta",
+        "description": "Italian pasta with a rich tomato sauce",
+        "price": 12,
+        "gredients": ["Pasta", "Tomato Sauce"]
+      },
+      {
+        "name": "Salad",
+        "description": "Fresh salad with a variety of vegetables",
+        "price": 8,
+        "gredients": ["Lettuce", "Cucumber", "Tomato"]
+      },
+      {
+        "name": "Steak",
+        "description": "Grilled steak with a side of vegetables",
+        "price": 20,
+        "gredients": ["Steak", "Vegetables"]
+      },
+      {
+        "name": "Fish",
+        "description": "Grilled fish with a lemon butter sauce",
+        "price": 18,
+        "gredients": ["Fish", "Lemon", "Butter"]
+      }
+    ]
+  },
+  {
+    "imgSection": "menu-section/food-menu-section-03.jpg",
+    "isImgLeft": true,
+    "titleSection": "Delicious Foods",
+    "listMenu": [
+      {
+        "name": "Pizza",
+        "description": "Delicious pizza with fresh ingredients",
+        "price": 15,
+        "gredients": ["Cheese", "Tomato", "Basil"]
+      },
+      {
+        "name": "Burger",
+        "description": "Juicy burger with lettuce and tomato",
+        "price": 10,
+        "gredients": ["Beef", "Lettuce", "Tomato"]
+      },
+      {
+        "name": "Pasta",
+        "description": "Italian pasta with a rich tomato sauce",
+        "price": 12,
+        "gredients": ["Pasta", "Tomato Sauce"]
+      },
+      {
+        "name": "Salad",
+        "description": "Fresh salad with a variety of vegetables",
+        "price": 8,
+        "gredients": ["Lettuce", "Cucumber", "Tomato"]
+      },
+      {
+        "name": "Steak",
+        "description": "Grilled steak with a side of vegetables",
+        "price": 20,
+        "gredients": ["Steak", "Vegetables"]
+      },
+      {
+        "name": "Fish",
+        "description": "Grilled fish with a lemon butter sauce",
+        "price": 18,
+        "gredients": ["Fish", "Lemon", "Butter"]
+      }
+    ]
+  },
+  {
+    "imgSection": "menu-section/food-menu-section-01.jpg",
+    "isImgLeft": false,
+    "titleSection": "Delicious Foods",
+    "listMenu": [
+      {
+        "name": "Pizza",
+        "description": "Delicious pizza with fresh ingredients",
+        "price": 15,
+        "gredients": ["Cheese", "Tomato", "Basil"]
+      },
+      {
+        "name": "Burger",
+        "description": "Juicy burger with lettuce and tomato",
+        "price": 10,
+        "gredients": ["Beef", "Lettuce", "Tomato"]
+      },
+      {
+        "name": "Pasta",
+        "description": "Italian pasta with a rich tomato sauce",
+        "price": 12,
+        "gredients": ["Pasta", "Tomato Sauce"]
+      },
+      {
+        "name": "Salad",
+        "description": "Fresh salad with a variety of vegetables",
+        "price": 8,
+        "gredients": ["Lettuce", "Cucumber", "Tomato"]
+      },
+      {
+        "name": "Steak",
+        "description": "Grilled steak with a side of vegetables",
+        "price": 20,
+        "gredients": ["Steak", "Vegetables"]
+      },
+      {
+        "name": "Fish",
+        "description": "Grilled fish with a lemon butter sauce",
+        "price": 18,
+        "gredients": ["Fish", "Lemon", "Butter"]
+      }
+    ]
+  }
+]

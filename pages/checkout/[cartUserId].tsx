@@ -19,17 +19,20 @@ export interface CheckoutPageProps {
   checkoutData: any;
 }
 const initValues: CheckoutModel = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  phone: "",
-  street: "",
-  district: "",
-  city: "",
-  billingAddress: false,
-
-  totalPrice: 0,
-  zipCode: "",
+  order_address: {
+    user_street: "",
+    user_city: "",
+    user_district: "",
+  },
+  order_billingAddress: true,
+  order_email: "",
+  order_phoneNumber: "",
+  order_totalPrice: 0,
+  order_userName: {
+    user_firstName: "",
+    user_lastName: "",
+  },
+  order_zipCode: "",
 };
 export default function CheckoutPage({
   cartUser,

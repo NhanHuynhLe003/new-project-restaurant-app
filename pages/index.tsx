@@ -497,9 +497,9 @@ And Experienced "
         <Box position={"relative"}>
           <Box
             position={"absolute"}
-            left={"-10%"}
+            left={"0"}
             top={"0"}
-            right={"-10%"}
+            right={"0"}
             bottom={0}
           >
             <Acheivement iconList={acheiveList}></Acheivement>
@@ -508,7 +508,10 @@ And Experienced "
       </Box>
 
       <Box my={"30rem"}> </Box>
-      <Box padding={{ xs: "2rem 1rem", sm: "2rem 0" }}>
+      <Box
+        padding={{ xs: "2rem 1rem", sm: "2rem 0" }}
+        mt={{ xs: "60rem", sm: "0" }}
+      >
         <Box>
           <Typography
             sx={{ color: "var(--primary-color)" }}

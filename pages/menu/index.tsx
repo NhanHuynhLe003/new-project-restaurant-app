@@ -11,6 +11,9 @@ import icYearExp from "../../assets/icons/food_ic_fork_spoon.svg";
 import icPizza from "../../assets/icons/food_ic_pizza.svg";
 import { GetStaticProps, GetStaticPropsContext } from "next";
 import { da } from "date-fns/locale";
+import fs from "fs";
+import path from "path";
+
 export interface MenuPageProps {
   listData: any;
 }
@@ -68,7 +71,7 @@ export default function MenuPage({ listData }: MenuPageProps) {
           justifyContent={"center"}
           minHeight={"100vh"}
         >
-          <CircularProgress size={"10rem"}></CircularProgress>
+          <CircularProgress size={"6rem"}></CircularProgress>
         </Stack>
       )}
     </MainLayout>
@@ -79,10 +82,13 @@ export const getStaticProps: GetStaticProps<MenuPageProps> = async (
   context: GetStaticPropsContext
 ) => {
   try {
-    const apiUrl = process.env.API_URL || "http://localhost:3000";
-    const response = await fetch(`${apiUrl}/api/menu/menu-section-list`);
-    const data = await response.json();
-    console.log("DATA:::: ", data);
+    // Đường dẫn tuyệt đối đến tệp JSON
+    const filePath = path.join(process.cwd(), "jsons/menuList.json");
+
+    // Đọc tệp JSON
+    const jsonData = fs.readFileSync(filePath, "utf-8");
+    const data = JSON.parse(jsonData);
+
     return {
       props: {
         listData: data,
