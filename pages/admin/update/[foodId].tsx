@@ -4,7 +4,12 @@ import { Box, Button, Card, CircularProgress, Typography } from "@mui/material";
 import { Rate } from "antd";
 import { API, Amplify, Auth } from "aws-amplify";
 import { format } from "date-fns";
-import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from "next";
+import {
+  GetServerSideProps,
+  GetStaticPaths,
+  GetStaticProps,
+  GetStaticPropsContext,
+} from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import * as React from "react";
@@ -39,9 +44,10 @@ export default function UpdateFoodPage({ food }: UpdateFoodPageProps) {
 
   const [fileUpload, setFileUpload] = React.useState<File>();
   const [loadingAuth, setLoadingAuth] = React.useState(true);
-  const [imageFile, setImageFile] = React.useState<string | null>(
+  const [imageFile, setImageFile] = React.useState<string | null | undefined>(
     food.food_img
   );
+
   const initValues = {
     id: food.food_id,
     img: food.food_img,
@@ -161,6 +167,7 @@ export default function UpdateFoodPage({ food }: UpdateFoodPageProps) {
 
   async function handleSubmitForm() {
     try {
+      // Đợi ảnh được upload lên S3 và lấy ra url
       const urlImageUploaded = await UploadImageToS3(
         fileUpload,
         fileUpload?.name
@@ -332,7 +339,9 @@ export default function UpdateFoodPage({ food }: UpdateFoodPageProps) {
                       width={0}
                       height={0}
                       style={{ width: "100%", height: "auto" }}
-                      src={imageFile}
+                      src={
+                        imageFile ? imageFile : "https://placehold.co/400x300"
+                      }
                       alt={`img-preview`}
                     ></Image>
                   ) : (
@@ -384,34 +393,66 @@ export default function UpdateFoodPage({ food }: UpdateFoodPageProps) {
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const foodListData: FoodModel[] = await API.get(API_GW_NAME, "/foods", {});
-  const dataConvert = handleConvertObjectDdb(foodListData);
-  return {
-    paths: dataConvert.map((food, index) => ({
-      params: { foodId: `${food.food_id}-type=${food.food_type}` },
-    })),
-
-    fallback: true, // cho phep chay o server neu chua co datad
-  };
-};
-
-export const getStaticProps: GetStaticProps<UpdateFoodPageProps> = async (
-  context: GetStaticPropsContext
-) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   let foodIdParams = context.params?.foodId;
 
   if (!foodIdParams) return { notFound: true };
+
+  // thay thế -type bằng ?type để lấy dữ liệu
   if (typeof foodIdParams == "string") {
     foodIdParams = foodIdParams.replace("-type", "?type");
   }
 
   const data = await API.get(API_GW_NAME, `/foods/${foodIdParams}`, {});
+  if (!data) {
+    // Nếu không tìm thấy dữ liệu, trả về { notFound: true }
+    return { notFound: true };
+  }
 
+  // Trả về dữ liệu nếu tìm thấy
   return {
     props: {
       food: data,
     },
-    revalidate: 30,
   };
 };
+
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const foodListData: FoodModel[] = await API.get(API_GW_NAME, "/foods", {});
+//   const dataConvert = handleConvertObjectDdb(foodListData);
+//   return {
+//     paths: dataConvert.map((food, index) => ({
+//       params: { foodId: `${food.food_id}-type=${food.food_type}` },
+//     })),
+
+//     fallback: true, // cho phep chay o server neu chua co datad
+//   };
+// };
+
+// export const getStaticProps: GetStaticProps<UpdateFoodPageProps> = async (
+//   context: GetStaticPropsContext
+// ) => {
+//   let foodIdParams = context.params?.foodId;
+
+//   if (!foodIdParams) return { notFound: true };
+
+//   // thay thế -type bằng ?type để lấy dữ liệu
+//   if (typeof foodIdParams == "string") {
+//     foodIdParams = foodIdParams.replace("-type", "?type");
+//   }
+
+//   const data = await API.get(API_GW_NAME, `/foods/${foodIdParams}`, {});
+
+//   if (!data) {
+//     return {
+//       notFound: true,
+//     };
+//   }
+
+//   return {
+//     props: {
+//       food: data,
+//     },
+//     revalidate: 30,
+//   };
+// };
